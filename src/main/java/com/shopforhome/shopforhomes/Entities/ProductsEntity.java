@@ -1,26 +1,3 @@
-// package com.shopforhome.shopforhomes.Entities;
-
-// import jakarta.persistence.*;
-// import lombok.Data;
-// import java.util.List;
-
-// @Data
-// @Entity
-// @Table(name = "Products")
-// public class ProductsEntity {
-//     @Id
-//     private String pid;
-//     private String name;
-//     private String description;
-//     private double price;
-//     private String category;
-//     // private String image_paths;
-//     private List<String> imagePaths;
-
-
-//     private int stock;
-// }
-
 package com.shopforhome.shopforhomes.Entities;
 
 import jakarta.persistence.*;
