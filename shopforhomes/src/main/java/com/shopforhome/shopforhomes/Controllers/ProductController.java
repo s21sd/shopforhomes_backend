@@ -9,7 +9,7 @@ import com.shopforhome.shopforhomes.Services.ProductServices;
 import java.util.List;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("api/products")
 public class ProductController {
 
     @Autowired

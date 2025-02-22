@@ -10,7 +10,7 @@ import com.shopforhome.shopforhomes.Services.OrdersService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("api/orders")
 public class OrdersController {
 
     @Autowired
