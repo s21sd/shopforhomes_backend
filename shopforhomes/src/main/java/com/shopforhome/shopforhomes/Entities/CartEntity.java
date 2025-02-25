@@ -13,7 +13,7 @@ public class CartEntity {
     private String cid;
 
     private String productName;
-    private int productPrice;
+    private double productPrice;
     private int quantity = 1;
 
     @Column(length = 36)
