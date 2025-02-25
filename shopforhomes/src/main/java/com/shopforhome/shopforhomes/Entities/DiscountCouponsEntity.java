@@ -18,8 +18,10 @@ public class DiscountCouponsEntity {
     @Column(nullable = false)
     private double discount;
 
-    @Column(length = 36)
-    private String userId;  
+    @ManyToOne
+    @JoinColumn(name = "uid")
+    // @Column(length = 36)
+    private UserEntity userId;  
 
     @Column(nullable = false)
     private java.sql.Date expiryDate;

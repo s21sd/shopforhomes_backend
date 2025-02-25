@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.shopforhome.shopforhomes.Entities.OrdersEntity;
+import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import com.shopforhome.shopforhomes.Services.OrdersService;
 import java.util.List;
@@ -18,7 +19,7 @@ public class OrdersController {
 
     // Get all orders for a specific user
     @GetMapping("/{userId}")
-    public ResponseEntity<List<OrdersEntity>> getUserOrders(@PathVariable String userId) {
+    public ResponseEntity<List<OrdersEntity>> getUserOrders(@PathVariable UserEntity userId) {
         return ordersService.getOrdersByUser(userId);
     }
 

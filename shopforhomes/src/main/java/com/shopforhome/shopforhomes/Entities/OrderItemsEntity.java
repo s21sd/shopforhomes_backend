@@ -13,11 +13,13 @@ public class OrderItemsEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String oiid;
 
-    @Column(name = "order_id", nullable = false)
-    private String orderId;
+    @ManyToOne
+    @JoinColumn(name = "oid", nullable = false)
+    private OrdersEntity orderId;
 
-    @Column(name = "product_id", nullable = false)
-    private String productId;
+    @ManyToOne
+    @JoinColumn(name = "pid", nullable = false)
+    private ProductsEntity productId;
 
     @Column(nullable = false)
     private int quantity = 1;

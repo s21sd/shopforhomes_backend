@@ -7,17 +7,19 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "Review")
-public class ReviewEntity {
-
+public class ReviewEntity 
+{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String rid;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @ManyToOne
+    @JoinColumn(name = "uid", nullable = false)
+    private UserEntity userId;
 
-    @Column(name = "product_id", nullable = false)
-    private String productId;
+    @ManyToOne
+    @JoinColumn(name = "pid", nullable = false)
+    private ProductsEntity productId;
 
     @Column(nullable = false)
     private int rating;

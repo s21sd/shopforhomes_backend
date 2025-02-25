@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.shopforhome.shopforhomes.Dao.OrdersDao;
 import com.shopforhome.shopforhomes.Entities.OrdersEntity;
+import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,7 @@ public class OrdersService {
     private OrdersDao ordersDao;
 
     // Get all orders for a user
-    public ResponseEntity<List<OrdersEntity>> getOrdersByUser(String userId) {
+    public ResponseEntity<List<OrdersEntity>> getOrdersByUser(UserEntity userId) {
         List<OrdersEntity> orders = ordersDao.findByUserId(userId);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }

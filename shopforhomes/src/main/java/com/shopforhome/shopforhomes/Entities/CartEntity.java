@@ -2,8 +2,13 @@ package com.shopforhome.shopforhomes.Entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Data
+@Getter
+@Setter
 @Entity
 @Table(name = "Cart")
 public class CartEntity {
@@ -13,12 +18,26 @@ public class CartEntity {
     private String cid;
 
     private String productName;
+
     private double productPrice;
+
+    @Column(nullable = false)
     private int quantity = 1;
 
-    @Column(length = 36)
-    private String userId;  // Foreign key reference to Users(uid)
+    @ManyToOne
+    @JoinColumn(name = "uid", nullable = false)
+    private UserEntity  user;  // Foreign key reference to Users(uid)
 
-    @Column(length = 36)
-    private String productId;  // Foreign key reference to Products(pid)
+    @ManyToOne
+    @JoinColumn(name = "pid", nullable = false)
+    private ProductsEntity product;  // Foreign key reference to Products(pid)
+
+
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+
+    public void setProduct(ProductsEntity product) {
+        this.product = product;
+    }
 }

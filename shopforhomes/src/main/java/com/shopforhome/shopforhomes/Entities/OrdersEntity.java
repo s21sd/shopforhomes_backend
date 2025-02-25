@@ -1,5 +1,6 @@
 package com.shopforhome.shopforhomes.Entities;
 
+import java.util.*;
 import jakarta.persistence.*;
 import lombok.Data;
 // import java.math.BigDecimal;
@@ -14,8 +15,9 @@ public class OrdersEntity {
     @Column(length = 36)  // UUID format
     private String oid;
 
-    @Column(length = 36)
-    private String userId; // Foreign key reference to Users(uid)
+    @ManyToOne
+    @JoinColumn(name = "uid", nullable = false)
+    private UserEntity userId; // Foreign key reference to Users(uid)
 
     private double totalPrice;
 
@@ -23,6 +25,10 @@ public class OrdersEntity {
     @Column(nullable = false)
     private OrderStatus status;
 
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now(); 
+
+    // @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<OrderItemsEntity> orderItems;
+
 }

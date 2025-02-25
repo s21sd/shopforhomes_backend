@@ -17,6 +17,9 @@ public class ProductServices {
     // Get all products
     public ResponseEntity<List<ProductsEntity>> getAllProducts() {
         List<ProductsEntity> products = productDao.findAll();
+        if (products.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -26,3 +29,4 @@ public class ProductServices {
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
 }
+

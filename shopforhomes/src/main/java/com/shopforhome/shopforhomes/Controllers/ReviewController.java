@@ -1,6 +1,8 @@
 package com.shopforhome.shopforhomes.Controllers;
 
+import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Entities.ReviewEntity;
+import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +23,13 @@ public class ReviewController {
     }
 
     @GetMapping("/product/{productId}")
-    public List<ReviewEntity> getReviewsByProduct(@PathVariable String productId) {
-        return reviewService.getReviewsByProductId(productId);
+    public List<ReviewEntity> getReviewsByProduct(@PathVariable ProductsEntity product) {
+        return reviewService.getReviewsByProductId(product);
     }
 
     @GetMapping("/user/{userId}")
-    public List<ReviewEntity> getReviewsByUser(@PathVariable String userId) {
-        return reviewService.getReviewsByUserId(userId);
+    public List<ReviewEntity> getReviewsByUser(@PathVariable UserEntity user) {
+        return reviewService.getReviewsByUserId(user);
     }
 
     @GetMapping("/{rid}")

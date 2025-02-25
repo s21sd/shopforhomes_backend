@@ -1,6 +1,7 @@
 package com.shopforhome.shopforhomes.Services;
 
 import com.shopforhome.shopforhomes.Entities.OrderItemsEntity;
+import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 import com.shopforhome.shopforhomes.Dao.OrderItemsDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class OrderItemsService {
         return orderItemsDao.save(orderItem);
     }
 
-    public List<OrderItemsEntity> getItemsByOrderId(String orderId) {
+    public List<OrderItemsEntity> getItemsByOrderId(OrdersEntity orderId) {
         return orderItemsDao.findByOrderId(orderId);
     }
 

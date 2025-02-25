@@ -2,9 +2,10 @@ package com.shopforhome.shopforhomes.Dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.shopforhome.shopforhomes.Entities.CartEntity;
+import com.shopforhome.shopforhomes.Entities.UserEntity;
+
 import java.util.List;
 
-public interface CartDao extends JpaRepository<CartEntity, String> 
-{
-    List<CartEntity> findByUserId(String userId);
+public interface CartDao extends JpaRepository<CartEntity, String> {
+    List<CartEntity> findByUser(UserEntity user);
 }

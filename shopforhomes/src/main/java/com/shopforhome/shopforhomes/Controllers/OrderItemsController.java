@@ -1,6 +1,7 @@
 package com.shopforhome.shopforhomes.Controllers;
 
 import com.shopforhome.shopforhomes.Entities.OrderItemsEntity;
+import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 import com.shopforhome.shopforhomes.Services.OrderItemsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class OrderItemsController {
     }
 
     @GetMapping("/order/{orderId}")
-    public List<OrderItemsEntity> getItemsByOrder(@PathVariable String orderId) {
+    public List<OrderItemsEntity> getItemsByOrder(@PathVariable OrdersEntity orderId) {
         return orderItemsService.getItemsByOrderId(orderId);
     }
 

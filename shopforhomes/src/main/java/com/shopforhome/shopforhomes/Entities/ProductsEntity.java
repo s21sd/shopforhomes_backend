@@ -10,8 +10,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "products")
 public class ProductsEntity {
+
     @Id
-    private String pid = UUID.randomUUID().toString();  
+    @GeneratedValue(strategy = GenerationType.UUID)  
+    private String pid;
 
     private String name;
     private String description;
