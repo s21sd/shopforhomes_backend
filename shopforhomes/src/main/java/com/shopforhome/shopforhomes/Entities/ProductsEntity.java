@@ -12,27 +12,31 @@ import java.util.UUID;
 public class ProductsEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)  
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String pid;
 
     private String name;
     private String description;
     private double price;
     private String category;
-
     @Column(name = "image_paths")
-    private String imagePathsString;  
+    private String imagePaths; // Store as a string in DB
 
     @Transient
-    private List<String> imagePaths;
+    private List<String> imagePathsList; // Convert for Java use
 
-    public List<String> getImagePaths() {
-        return imagePathsString != null ? Arrays.asList(imagePathsString.split(",")) : null;
+    // Getter: Convert stored comma-separated string to List<String>
+    public List<String> getImagePathsList() {
+        if (this.imagePathsList == null && this.imagePaths != null) {
+            this.imagePathsList = Arrays.asList(this.imagePaths.split(","));
+        }
+        return this.imagePathsList;
     }
 
-    public void setImagePaths(List<String> imagePaths) {
-        this.imagePaths = imagePaths;
-        this.imagePathsString = (imagePaths != null) ? String.join(",", imagePaths) : null;
+    // Setter: Convert List<String> to comma-separated string
+    public void setImagePathsList(List<String> imagePathsList) {
+        this.imagePathsList = imagePathsList;
+        this.imagePaths = (imagePathsList != null) ? String.join(",", imagePathsList) : null;
     }
 
     private int stock;
