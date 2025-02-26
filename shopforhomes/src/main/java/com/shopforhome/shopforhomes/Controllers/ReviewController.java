@@ -4,11 +4,60 @@ import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Entities.ReviewEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Services.ReviewService;
+import com.shopforhome.shopforhomes.Services.ProductServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import com.shopforhome.shopforhomes.DTOs.ReviewDTO;
+
+
+// import java.util.List;
+import java.util.Optional;
+
+// @RestController
+// @RequestMapping("/reviews")
+// public class ReviewController {
+
+//     @Autowired
+//     private ReviewService reviewService;
+
+//     @Autowired
+//     private ProductServices productServices;
+
+    
+
+    // @GetMapping("/product/{productId}")
+    // public List<ReviewEntity> getReviewsByProduct(@PathVariable ProductsEntity product) {
+    //     return reviewService.getReviewsByProductId(product);
+    // }
+
+    // @GetMapping("/user/{userId}")
+    // public List<ReviewEntity> getReviewsByUser(@PathVariable UserEntity user) {
+    //     return reviewService.getReviewsByUserId(user);
+    // }
+//     @GetMapping("/product/{productId}")
+// public List<ReviewEntity> getReviewsByProduct(@PathVariable String productId) {
+//     ProductsEntity product = new ProductsEntity();
+//     product.setPid(productId);
+//     return reviewService.getReviewsByProductId(product);
+// }
+
+// @GetMapping("/user/{userId}")
+// public List<ReviewEntity> getReviewsByUser(@PathVariable String userId) {
+//     UserEntity user = new UserEntity();
+//     user.setUid(userId);
+//     return reviewService.getReviewsByUserId(user);
+// }
+
+import com.shopforhome.shopforhomes.DTOs.ReviewDTO;
+import com.shopforhome.shopforhomes.Entities.ReviewEntity;
+import com.shopforhome.shopforhomes.Entities.UserEntity;
+import com.shopforhome.shopforhomes.Entities.ProductsEntity;
+import com.shopforhome.shopforhomes.Services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/reviews")
@@ -17,19 +66,28 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
+    @Autowired
+    private ProductServices productServices;
+
     @PostMapping("/add")
     public ReviewEntity addReview(@RequestBody ReviewEntity review) {
         return reviewService.addReview(review);
     }
 
-    @GetMapping("/product/{productId}")
-    public List<ReviewEntity> getReviewsByProduct(@PathVariable ProductsEntity product) {
-        return reviewService.getReviewsByProductId(product);
+    @GetMapping("/user/{userId}")
+    public List<ReviewDTO> getReviewsByUser(@PathVariable String userId) {
+        UserEntity user = new UserEntity();
+        user.setUid(userId);
+        List<ReviewEntity> reviews = reviewService.getReviewsByUserId(user);
+        return reviews.stream().map(ReviewDTO::new).collect(Collectors.toList());
     }
 
-    @GetMapping("/user/{userId}")
-    public List<ReviewEntity> getReviewsByUser(@PathVariable UserEntity user) {
-        return reviewService.getReviewsByUserId(user);
+    @GetMapping("/product/{productId}")
+    public List<ReviewDTO> getReviewsByProduct(@PathVariable String productId) {
+        ProductsEntity product = new ProductsEntity();
+        product.setPid(productId);
+        List<ReviewEntity> reviews = reviewService.getReviewsByProductId(product);
+        return reviews.stream().map(ReviewDTO::new).collect(Collectors.toList());
     }
 
     @GetMapping("/{rid}")
@@ -41,4 +99,5 @@ public class ReviewController {
     public void deleteReview(@PathVariable String rid) {
         reviewService.deleteReview(rid);
     }
+
 }

@@ -14,11 +14,11 @@ public class ReviewEntity
     private String rid;
 
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "uid", referencedColumnName="uid", nullable = false)
     private UserEntity userId;
 
     @ManyToOne
-    @JoinColumn(name = "pid", nullable = false)
+    @JoinColumn(name = "pid", referencedColumnName="pid", nullable = false)
     private ProductsEntity productId;
 
     @Column(nullable = false)

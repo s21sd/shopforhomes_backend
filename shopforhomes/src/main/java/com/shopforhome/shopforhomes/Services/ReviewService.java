@@ -4,6 +4,8 @@ import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Entities.ReviewEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Dao.ReviewDao;
+import com.shopforhome.shopforhomes.Dao.UserDao;
+import com.shopforhome.shopforhomes.Dao.ProductDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +18,41 @@ public class ReviewService {
     @Autowired
     private ReviewDao reviewDao;
 
-    public ReviewEntity addReview(ReviewEntity review) {
-        return reviewDao.save(review);
+    @Autowired
+    private UserDao userDao;
+
+    @Autowired
+    private ProductDao productDao;
+
+
+    // public ReviewEntity addReview(ReviewEntity review) {
+    //     return reviewDao.save(review);
+    // }
+//     public ReviewEntity addReview(ReviewEntity review) {
+//     if (review.getUserId() == null || review.getProductId() == null) {
+//         throw new IllegalArgumentException("User and Product cannot be null");
+//     }
+//     return reviewDao.save(review);
+// }
+
+public ReviewEntity addReview(ReviewEntity review) {
+    if (review.getUserId() == null || review.getProductId() == null) {
+        throw new IllegalArgumentException("User and Product cannot be null");
     }
+
+    // Fetch actual UserEntity and ProductsEntity from the database
+    UserEntity user = userDao.findById(review.getUserId().getUid())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid User ID"));
+    ProductsEntity product = productDao.findById(review.getProductId().getPid())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid Product ID"));
+
+    // Set the fetched objects
+    review.setUserId(user);
+    review.setProductId(product);
+
+    return reviewDao.save(review);
+}
+
 
     public List<ReviewEntity> getReviewsByProductId(ProductsEntity product) {
         return reviewDao.findByProductId(product);
