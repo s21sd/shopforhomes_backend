@@ -24,5 +24,18 @@ public class UserServices {
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+    
+    // Update the user
+    public ResponseEntity<UserEntity> updateUser(String uid, UserEntity user) {
+        return userDao.findById(uid)
+                .map(userObj -> {
+                    userObj.setName(user.getName());
+                    userObj.setEmail(user.getEmail());
+                    userObj.setPassword(user.getPassword());
+                    userObj.setRole(user.getRole());
+                    userObj.setPhone(user.getPhone());
+                    return new ResponseEntity<>(userDao.save(userObj), HttpStatus.OK);
+                })
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 }
