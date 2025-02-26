@@ -31,4 +31,9 @@ public class ProductController {
     public ResponseEntity<ProductsEntity> addProduct(@RequestBody ProductsEntity product) {
         return productServices.addProduct(product);
     }
+
+    @GetMapping("search")
+    public List<ProductsEntity> searchProducts(@RequestParam String query) {
+        return productServices.searchProducts(query);
+    }
 }
