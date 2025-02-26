@@ -1,11 +1,13 @@
 package com.shopforhome.shopforhomes.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 // import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
+import com.shopforhome.shopforhomes.DTO.OrderDTO;
 import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import com.shopforhome.shopforhomes.Services.OrdersService;
 import java.util.List;
@@ -17,9 +19,15 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
+    // Get all orders
+    @GetMapping("/all")
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        return ordersService.getAllOrders();
+    }
+
     // Get all orders for a specific user
     @GetMapping("/{userId}")
-    public ResponseEntity<List<OrdersEntity>> getUserOrders(@PathVariable UserEntity userId) {
+    public ResponseEntity<List<OrderDTO>> getUserOrders(@PathVariable String userId) {
         return ordersService.getOrdersByUser(userId);
     }
 

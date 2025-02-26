@@ -7,7 +7,7 @@ import com.shopforhome.shopforhomes.Services.ReviewService;
 import com.shopforhome.shopforhomes.Services.ProductServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.shopforhome.shopforhomes.DTOs.ReviewDTO;
+import com.shopforhome.shopforhomes.DTO.ReviewDTO;
 
 
 // import java.util.List;
@@ -48,13 +48,6 @@ import java.util.Optional;
 //     return reviewService.getReviewsByUserId(user);
 // }
 
-import com.shopforhome.shopforhomes.DTOs.ReviewDTO;
-import com.shopforhome.shopforhomes.Entities.ReviewEntity;
-import com.shopforhome.shopforhomes.Entities.UserEntity;
-import com.shopforhome.shopforhomes.Entities.ProductsEntity;
-import com.shopforhome.shopforhomes.Services.ReviewService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -4,31 +4,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import com.shopforhome.shopforhomes.DTO.OrderDTO;
 import com.shopforhome.shopforhomes.Dao.OrdersDao;
+import com.shopforhome.shopforhomes.Dao.UserDao;
 import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
+// import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrdersService {
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private OrdersDao ordersDao;
 
     // Get all orders for a user
-    public ResponseEntity<List<OrdersEntity>> getOrdersByUser(UserEntity userId) {
-        List<OrdersEntity> orders = ordersDao.findByUserId(userId);
-        return new ResponseEntity<>(orders, HttpStatus.OK);
+    public ResponseEntity<List<OrderDTO>> getOrdersByUser(String userId) {
+        List<OrdersEntity> orders = ordersDao.findByUser_Uid(userId);
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(order -> new OrderDTO(order.getOid(), order.getUser().getUid(), order.getTotalPrice(), order.getStatus(), order.getCreatedAt()))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
     }
+
 
     // Place a new order
     public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) {
-        order.setStatus(OrderStatus.PENDING); // Default status
-        OrdersEntity savedOrder = ordersDao.save(order);
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    if (order.getUser() == null || order.getUser().getUid() == null) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+    Optional<UserEntity> userOpt = userDao.findById(order.getUser().getUid());
+    if (userOpt.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+    order.setUser(userOpt.get());
+    order.setStatus(OrderStatus.PENDING);
+    OrdersEntity savedOrder = ordersDao.save(order);
+    return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    }
+
+    // Fetch all the orders
+    public ResponseEntity<List<OrderDTO>> getAllOrders() {
+        List<OrdersEntity> orders = ordersDao.findAll();
+        List<OrderDTO> orderDTOs = orders.stream()
+                .map(order -> new OrderDTO(order.getOid(), order.getUser().getUid(), order.getTotalPrice(), order.getStatus(), order.getCreatedAt()))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
+    }
+
 
     // Update order status
     public ResponseEntity<OrdersEntity> updateOrderStatus(String orderId, OrderStatus status) {

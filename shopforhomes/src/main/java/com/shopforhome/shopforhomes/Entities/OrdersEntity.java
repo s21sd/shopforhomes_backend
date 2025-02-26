@@ -12,12 +12,12 @@ import java.time.LocalDateTime;
 public class OrdersEntity {
 
     @Id
-    @Column(length = 36)  // UUID format
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String oid;
 
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
-    private UserEntity userId; // Foreign key reference to Users(uid)
+    @JoinColumn(name = "uid", referencedColumnName = "uid", nullable = false)
+    private UserEntity user; 
 
     private double totalPrice;
 
@@ -28,7 +28,5 @@ public class OrdersEntity {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now(); 
 
-    // @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<OrderItemsEntity> orderItems;
 
 }
