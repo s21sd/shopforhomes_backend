@@ -37,7 +37,6 @@ public class OrdersService {
 
 
     // Place a new order
-<<<<<<< HEAD
     // public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) {
     // if (order.getUser() == null || order.getUser().getUid() == null) {
     //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -73,7 +72,6 @@ public class OrdersService {
     return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
 }
 
-=======
     public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) 
     {
         // if (order.getUser() == null || order.getUser().getUid() == null) {
@@ -88,7 +86,6 @@ public class OrdersService {
         OrdersEntity savedOrder = ordersDao.save(order);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
->>>>>>> 5e7b030 (changes)
 
     // Fetch all the orders
     public ResponseEntity<List<OrderDTO>> getAllOrders() {
