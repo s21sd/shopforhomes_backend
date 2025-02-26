@@ -20,7 +20,6 @@ public class DiscountCouponsEntity {
 
     @ManyToOne
     @JoinColumn(name = "uid")
-    // @Column(length = 36)
     private UserEntity userId;  
 
     @Column(nullable = false)
