@@ -1,4 +1,4 @@
-package com.shopforhome.shopforhomes.DTOs;
+package com.shopforhome.shopforhomes.DTO;
 
 import com.shopforhome.shopforhomes.Entities.ReviewEntity;
 import java.time.LocalDateTime;
