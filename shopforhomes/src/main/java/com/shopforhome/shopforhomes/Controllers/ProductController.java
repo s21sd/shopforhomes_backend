@@ -21,6 +21,11 @@ public class ProductController {
         return productServices.getAllProducts();
     }
 
+    @GetMapping("get/{pid}")
+    public ResponseEntity<ProductsEntity> getProduct(@PathVariable String pid) {
+        return productServices.getProduct(pid);
+    }
+
     // Add a product
     @PostMapping(value = "add", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ProductsEntity> addProduct(@RequestBody ProductsEntity product) {

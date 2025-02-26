@@ -28,5 +28,9 @@ public class ProductServices {
         ProductsEntity savedProduct = productDao.save(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
     }
-}
 
+    public ResponseEntity<ProductsEntity> getProduct(String pid) {
+        ProductsEntity product = productDao.findById(pid).orElse(new ProductsEntity());
+        return new ResponseEntity<>(product, HttpStatus.OK);
+    }
+}
