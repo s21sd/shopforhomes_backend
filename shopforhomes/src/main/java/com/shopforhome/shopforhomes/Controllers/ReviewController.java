@@ -7,11 +7,7 @@ import com.shopforhome.shopforhomes.Services.ReviewService;
 import com.shopforhome.shopforhomes.Services.ProductServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-<<<<<<< HEAD
-import com.shopforhome.shopforhomes.DTO.ReviewDTO;
-=======
 // import com.shopforhome.shopforhomes.DTO.ReviewDTO;
->>>>>>> 029932216f746b25c3f440459bfe8c57570d4e47
 
 
 // import java.util.List;
@@ -52,8 +48,6 @@ import java.util.Optional;
 //     return reviewService.getReviewsByUserId(user);
 // }
 
-<<<<<<< HEAD
-=======
 import com.shopforhome.shopforhomes.DTO.ReviewDTO;
 import com.shopforhome.shopforhomes.Entities.ReviewEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
@@ -61,7 +55,6 @@ import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Services.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
->>>>>>> 029932216f746b25c3f440459bfe8c57570d4e47
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -15,7 +15,7 @@ import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
+import java.util.Map;
 @Service
 public class OrdersService {
 
@@ -37,19 +37,41 @@ public class OrdersService {
 
 
     // Place a new order
-    public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) {
-    if (order.getUser() == null || order.getUser().getUid() == null) {
+    // public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) {
+    // if (order.getUser() == null || order.getUser().getUid() == null) {
+    //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    // }
+    // Optional<UserEntity> userOpt = userDao.findById(order.getUser().getUid());
+    // if (userOpt.isEmpty()) {
+    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    // }
+    // order.setUser(userOpt.get());
+    // order.setStatus(OrderStatus.PENDING);
+    // OrdersEntity savedOrder = ordersDao.save(order);
+    // return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    // }
+    public ResponseEntity<OrdersEntity> placeOrder(Map<String, Object> orderData) {
+    String uid = (String) orderData.get("uid");
+    Double totalPrice = ((Number) orderData.get("totalPrice")).doubleValue();
+    
+    if (uid == null) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-    Optional<UserEntity> userOpt = userDao.findById(order.getUser().getUid());
+
+    Optional<UserEntity> userOpt = userDao.findById(uid);
     if (userOpt.isEmpty()) {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    OrdersEntity order = new OrdersEntity();
     order.setUser(userOpt.get());
+    order.setTotalPrice(totalPrice);
     order.setStatus(OrderStatus.PENDING);
+
     OrdersEntity savedOrder = ordersDao.save(order);
     return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
-    }
+}
+
 
     // Fetch all the orders
     public ResponseEntity<List<OrderDTO>> getAllOrders() {

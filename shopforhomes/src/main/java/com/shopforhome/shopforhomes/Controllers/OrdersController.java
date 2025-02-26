@@ -12,6 +12,7 @@ import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import com.shopforhome.shopforhomes.Services.OrdersService;
 import java.util.List;
 
+import java.util.Map;
 @RestController
 @RequestMapping("api/orders")
 public class OrdersController {
@@ -32,10 +33,15 @@ public class OrdersController {
     }
 
     // Place a new order
+    // @PostMapping("/place")
+    // public ResponseEntity<OrdersEntity> placeOrder(@RequestBody OrdersEntity order) {
+    //     return ordersService.placeOrder(order);
+    // }
     @PostMapping("/place")
-    public ResponseEntity<OrdersEntity> placeOrder(@RequestBody OrdersEntity order) {
-        return ordersService.placeOrder(order);
-    }
+    public ResponseEntity<OrdersEntity> placeOrder(@RequestBody Map<String, Object> orderData) {
+    return ordersService.placeOrder(orderData);
+}
+
 
     // Update order status
     @PutMapping("/update/{orderId}")
