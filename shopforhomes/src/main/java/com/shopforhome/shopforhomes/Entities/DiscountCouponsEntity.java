@@ -5,26 +5,28 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "DiscountCoupons")
+@Table(name = "DiscountCoupons", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"code", "uid"}) // Ensures the same user cannot have the same coupon twice
+})
 public class DiscountCouponsEntity {
 
     @Id
-    @Column(length = 36)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String discountId;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String code;
 
     @Column(nullable = false)
     private double discount;
 
     @ManyToOne
-    @JoinColumn(name = "uid")
-    private UserEntity userId;  
+    @JoinColumn(name = "uid", nullable = false)
+    private UserEntity user;
 
     @Column(nullable = false)
     private java.sql.Date expiryDate;
 
     @Column(nullable = false)
-    private boolean isApplied = false;  
+    private boolean isApplied = false;  // Default value is false
 }

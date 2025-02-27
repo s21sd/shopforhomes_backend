@@ -28,7 +28,7 @@ public class DiscountCouponsController {
     }
 
     // Add a new discount coupon
-    @PostMapping
+    @PostMapping("/addDiscount")
     public ResponseEntity<DiscountCouponsEntity> addCoupon(@RequestBody DiscountCouponsEntity coupon) {
         return discountCouponsService.addCoupon(coupon);
     }
