@@ -33,9 +33,9 @@ public class DiscountCouponsController {
         return discountCouponsService.addCoupon(coupon);
     }
 
-    // Apply a discount by updating isApplied to true
-    @PutMapping("/apply/{code}")
-    public ResponseEntity<DiscountCouponsEntity> applyDiscount(@PathVariable String code) {
-        return discountCouponsService.applyDiscount(code);
-    }
+    // // Apply a discount by updating isApplied to true
+    // @PutMapping("/apply/{code}")
+    // public ResponseEntity<DiscountCouponsEntity> applyDiscount(@PathVariable String code) {
+    //     return discountCouponsService.applyDiscount(code);
+    // }
 }

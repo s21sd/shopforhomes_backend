@@ -5,9 +5,6 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "DiscountCoupons", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"code", "uid"}) // Ensures the same user cannot have the same coupon twice
-})
 public class DiscountCouponsEntity {
 
     @Id
@@ -21,12 +18,12 @@ public class DiscountCouponsEntity {
     private double discount;
 
     @ManyToOne
-    @JoinColumn(name = "uid", nullable = false)
+    @JoinColumn(name = "uid", referencedColumnName = "uid", nullable = false)
     private UserEntity user;
 
     @Column(nullable = false)
     private java.sql.Date expiryDate;
 
     @Column(nullable = false)
-    private boolean isApplied = false;  // Default value is false
+    private int isApplied = 0;  // 0 = Not Applied, 1 = Applied
 }
