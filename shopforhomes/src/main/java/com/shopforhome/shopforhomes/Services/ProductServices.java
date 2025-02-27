@@ -33,4 +33,12 @@ public class ProductServices {
         ProductsEntity product = productDao.findById(pid).orElse(new ProductsEntity());
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
+
+    // public List<String> autocomplete(String query){
+    //     return productDao.autocomplete(query);
+    // }
+
+    public List<ProductsEntity> searchProducts(String query){
+        return productDao.searchProducts(query);
+    }
 }
