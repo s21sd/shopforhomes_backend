@@ -5,26 +5,25 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "DiscountCoupons")
 public class DiscountCouponsEntity {
 
     @Id
-    @Column(length = 36)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String discountId;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String code;
 
     @Column(nullable = false)
     private double discount;
 
     @ManyToOne
-    @JoinColumn(name = "uid")
-    private UserEntity userId;  
+    @JoinColumn(name = "uid", referencedColumnName = "uid", nullable = false)
+    private UserEntity user;
 
     @Column(nullable = false)
     private java.sql.Date expiryDate;
 
     @Column(nullable = false)
-    private boolean isApplied = false;  
+    private int isApplied = 0;  // 0 = Not Applied, 1 = Applied
 }
