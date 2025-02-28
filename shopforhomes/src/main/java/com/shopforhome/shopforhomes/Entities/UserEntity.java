@@ -23,6 +23,4 @@ public class UserEntity
     private String password;
     private String role;
     private String phone;
-    // @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<OrdersEntity> orders;
 }

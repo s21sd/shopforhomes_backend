@@ -37,10 +37,11 @@ public class OrdersController {
     // public ResponseEntity<OrdersEntity> placeOrder(@RequestBody OrdersEntity order) {
     //     return ordersService.placeOrder(order);
     // }
+    
     @PostMapping("/place")
     public ResponseEntity<OrdersEntity> placeOrder(@RequestBody Map<String, Object> orderData) {
     return ordersService.placeOrder(orderData);
-}
+    }
 
 
     // Update order status
