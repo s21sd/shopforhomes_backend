@@ -46,7 +46,25 @@ public class OrdersController {
 
     // Update order status
     @PutMapping("/update/{orderId}")
-    public ResponseEntity<OrdersEntity> updateOrderStatus(@PathVariable String orderId, @RequestParam OrderStatus status) {
+    public ResponseEntity<OrdersEntity> updateOrderStatus(
+    @PathVariable String orderId,
+    @RequestBody Map<String, String> requestBody) 
+    {
+
+        if (!requestBody.containsKey("status")) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Status is missing
+        }
+
+        String statusString = requestBody.get("status");
+
+        OrderStatus status;
+        try {
+            status = OrderStatus.valueOf(statusString.toUpperCase()); // Convert string to Enum
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Invalid status
+        }
+
         return ordersService.updateOrderStatus(orderId, status);
     }
+
 }

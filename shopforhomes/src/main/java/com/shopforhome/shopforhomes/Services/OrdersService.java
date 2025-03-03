@@ -51,7 +51,7 @@ public class OrdersService {
     // return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     // }
 
-
+    // place a order
     public ResponseEntity<OrdersEntity> placeOrder(Map<String, Object> orderData) {
     String uid = (String) orderData.get("uid");
     Double totalPrice = ((Number) orderData.get("totalPrice")).doubleValue();
@@ -90,24 +90,39 @@ public class OrdersService {
     // }
 
     // Fetch all the orders
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        List<OrdersEntity> orders = ordersDao.findAll();
-        List<OrderDTO> orderDTOs = orders.stream()
-                .map(order -> new OrderDTO(order.getOid(), order.getUser().getUid(), order.getTotalPrice(), order.getStatus(), order.getCreatedAt()))
-                .collect(Collectors.toList());
-        return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
-    }
+    // public ResponseEntity<List<OrderDTO>> getAllOrders() {
+    //     List<OrdersEntity> orders = ordersDao.findAll();
+    //     List<OrderDTO> orderDTOs = orders.stream()
+    //             .map(order -> new OrderDTO(order.getOid(), order.getUser().getUid(), order.getTotalPrice(), order.getStatus(), order.getCreatedAt()))
+    //             .collect(Collectors.toList());
+    //     return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
+    // }
 
 
     // Update order status
+    // public ResponseEntity<OrdersEntity> updateOrderStatus(String orderId, OrderStatus status) {
+    //     Optional<OrdersEntity> existingOrder = ordersDao.findById(orderId);
+    //     if (existingOrder.isPresent()) {
+    //         OrdersEntity order = existingOrder.get();
+    //         order.setStatus(status);
+    //         ordersDao.save(order);
+    //         return new ResponseEntity<>(order, HttpStatus.OK);
+    //     }
+    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    // }
+
     public ResponseEntity<OrdersEntity> updateOrderStatus(String orderId, OrderStatus status) {
-        Optional<OrdersEntity> existingOrder = ordersDao.findById(orderId);
-        if (existingOrder.isPresent()) {
-            OrdersEntity order = existingOrder.get();
-            order.setStatus(status);
-            ordersDao.save(order);
-            return new ResponseEntity<>(order, HttpStatus.OK);
+        Optional<OrdersEntity> orderOpt = ordersDao.findById(orderId);
+        
+        if (orderOpt.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Order not found
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    
+        OrdersEntity order = orderOpt.get();
+        order.setStatus(status);
+        ordersDao.save(order);
+    
+        return new ResponseEntity<>(order, HttpStatus.OK);
     }
+    
 }
