@@ -1,5 +1,6 @@
 package com.shopforhome.shopforhomes.Services;
 
+import com.shopforhome.shopforhomes.DTO.DiscountCouponsDTO;
 import com.shopforhome.shopforhomes.Dao.DiscountCouponsDao;
 import com.shopforhome.shopforhomes.Dao.UserDao;
 import com.shopforhome.shopforhomes.Entities.DiscountCouponsEntity;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DiscountCouponsService {
@@ -20,20 +22,36 @@ public class DiscountCouponsService {
     @Autowired
     private UserDao userDao;
 
-    // Get all discount coupons
-    public ResponseEntity<List<DiscountCouponsEntity>> getAllCoupons() {
-        return new ResponseEntity<>(discountCouponsDao.findAll(), HttpStatus.OK);
+    // Convert Entity to DTO
+    private DiscountCouponsDTO convertToDTO(DiscountCouponsEntity entity) {
+        return new DiscountCouponsDTO(
+            entity.getDiscountId(),
+            entity.getCode(),
+            entity.getDiscount(),
+            entity.getExpiryDate(),
+            entity.getIsApplied()
+        );
+    }
+
+    // Get all discount coupons (returning DTO list)
+    public ResponseEntity<List<DiscountCouponsDTO>> getAllCoupons() {
+        List<DiscountCouponsDTO> coupons = discountCouponsDao.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(coupons, HttpStatus.OK);
     }
 
     // Get a discount coupon by code
-    public ResponseEntity<DiscountCouponsEntity> getCouponByCode(String code) {
+    public ResponseEntity<DiscountCouponsDTO> getCouponByCode(String code) {
         Optional<DiscountCouponsEntity> coupon = discountCouponsDao.findByCode(code);
-        return coupon.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        return coupon.map(value -> new ResponseEntity<>(convertToDTO(value), HttpStatus.OK))
                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+    
     // Add a new discount coupon
     public ResponseEntity<DiscountCouponsEntity> addCoupon(DiscountCouponsEntity coupon) {
+        
         if (coupon.getUser() == null || coupon.getUser().getUid() == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 Bad Request if user is missing
         }
@@ -41,6 +59,11 @@ public class DiscountCouponsService {
         Optional<UserEntity> user = userDao.findById(coupon.getUser().getUid());
         if (user.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 if user not found
+        }
+
+        if (!user.get().getRole().equals("Admin")) 
+        {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Forbidden if not Admin
         }
     
         coupon.setUser(user.get());

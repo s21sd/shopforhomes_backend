@@ -1,5 +1,6 @@
 package com.shopforhome.shopforhomes.Services;
 
+import com.shopforhome.shopforhomes.DTO.CartResponseDTO;
 import com.shopforhome.shopforhomes.Dao.CartDao;
 import com.shopforhome.shopforhomes.Dao.ProductDao;
 import com.shopforhome.shopforhomes.Entities.CartEntity;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartService {
@@ -27,13 +29,33 @@ public class CartService {
     @Autowired
     private ProductDao productDao;
 
-    public ResponseEntity<List<CartEntity>> getAllCartItems() {
-        return new ResponseEntity<>(cartDao.findAll(), HttpStatus.OK);
-    }
+    // public ResponseEntity<List<CartResponseDTO>> getAllCartItems() 
+    // {
+    //     List<CartResponseDTO> response = cartDao.findAll().stream()
+    //             .map(cartItem -> new CartResponseDTO(
+    //                     cartItem.getUser().getUid(),
+    //                     cartItem.getProduct().getPid(),
+    //                     cartItem.getProductName(),
+    //                     cartItem.getProductPrice(),
+    //                     cartItem.getQuantity()
+    //             ))
+    //             .collect(Collectors.toList());
 
-    public ResponseEntity<List<CartEntity>> getCartItemsByUserId(String userId) {
-        List<CartEntity> cartItems = cartDao.findByUser_Uid(userId);
-        return cartItems.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(cartItems, HttpStatus.OK);
+    //     return new ResponseEntity<>(response, HttpStatus.OK);
+    // }
+
+    public ResponseEntity<List<CartResponseDTO>> getCartItemsByUserId(String userId) {
+        List<CartResponseDTO> response = cartDao.findByUser_Uid(userId).stream()
+                .map(cartItem -> new CartResponseDTO(
+                        cartItem.getUser().getUid(),
+                        cartItem.getProduct().getPid(),
+                        cartItem.getProductName(),
+                        cartItem.getProductPrice(),
+                        cartItem.getQuantity()
+                ))
+                .collect(Collectors.toList());
+
+        return response.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     public ResponseEntity<CartEntity> addToCart(String userId, String productId, int quantity) {

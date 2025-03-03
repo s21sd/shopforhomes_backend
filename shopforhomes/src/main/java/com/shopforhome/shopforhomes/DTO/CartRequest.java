@@ -15,4 +15,3 @@ public class CartRequest {
     private int quantity;
 
 }
-

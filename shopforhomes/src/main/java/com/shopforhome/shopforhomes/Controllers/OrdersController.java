@@ -21,10 +21,10 @@ public class OrdersController {
     private OrdersService ordersService;
 
     // Get all orders
-    @GetMapping("/all")
-    public ResponseEntity<List<OrderDTO>> getAllOrders() {
-        return ordersService.getAllOrders();
-    }
+    // @GetMapping("/all")
+    // public ResponseEntity<List<OrderDTO>> getAllOrders() {
+    //     return ordersService.getAllOrders();
+    // }
 
     // Get all orders for a specific user
     @GetMapping("/{userId}")

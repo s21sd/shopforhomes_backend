@@ -3,6 +3,8 @@ package com.shopforhome.shopforhomes.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.shopforhome.shopforhomes.DTO.DiscountCouponsDTO;
 import com.shopforhome.shopforhomes.Entities.DiscountCouponsEntity;
 import com.shopforhome.shopforhomes.Services.DiscountCouponsService;
 
@@ -16,14 +18,14 @@ public class DiscountCouponsController {
     private DiscountCouponsService discountCouponsService;
 
     // Get all discount coupons
-    @GetMapping
-    public ResponseEntity<List<DiscountCouponsEntity>> getAllCoupons() {
-        return discountCouponsService.getAllCoupons();
-    }
+    // @GetMapping
+    // public ResponseEntity<List<DiscountCouponsDTO>> getAllCoupons() {
+    //     return discountCouponsService.getAllCoupons();
+    // }
 
     // Get a discount coupon by code
     @GetMapping("/{code}")
-    public ResponseEntity<DiscountCouponsEntity> getCouponByCode(@PathVariable String code) {
+    public ResponseEntity<DiscountCouponsDTO> getCouponByCode(@PathVariable String code) {
         return discountCouponsService.getCouponByCode(code);
     }
 
