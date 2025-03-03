@@ -19,7 +19,7 @@ public class WishlistController {
     public ResponseEntity<WishlistEntity> addToWishlist(@RequestBody WishlistEntity wishlist) {
         return wishlistService.addToWishlist(wishlist);
     }
-
+ 
     @GetMapping("user/{uid}")
     public ResponseEntity<List<WishlistEntity>> getUserWishlist(@PathVariable String uid) {
         return wishlistService.getUserWishlist(uid);

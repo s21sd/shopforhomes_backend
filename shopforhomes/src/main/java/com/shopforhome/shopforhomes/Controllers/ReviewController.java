@@ -70,9 +70,11 @@ public class ReviewController {
     private ProductServices productServices;
 
     @PostMapping("/add")
-    public ReviewEntity addReview(@RequestBody ReviewEntity review) {
-        return reviewService.addReview(review);
+    public ReviewDTO addReview(@RequestBody ReviewEntity review) {
+        ReviewEntity savedReview = reviewService.addReview(review);
+        return new ReviewDTO(savedReview);  // Convert to DTO before returning
     }
+
 
     @GetMapping("/user/{userId}")
     public List<ReviewDTO> getReviewsByUser(@PathVariable String userId) {
