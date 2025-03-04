@@ -17,13 +17,13 @@ public class ProductController {
 
     // Get all products
     @GetMapping("get")
-    public ResponseEntity<List<ProductsEntity>> getAllProducts() {
-        return productServices.getAllProducts();
+    public ResponseEntity<List<ProductsEntity>> getAllProducts(@RequestParam String uid) {
+        return productServices.getAllProducts(uid);
     }
 
     @GetMapping("get/{pid}")
-    public ResponseEntity<ProductsEntity> getProduct(@PathVariable String pid) {
-        return productServices.getProduct(pid);
+    public ResponseEntity<ProductsEntity> getProduct(@PathVariable String pid,@RequestParam String uid) {
+        return productServices.getProduct(pid,uid);
     }
 
     // Add a product
