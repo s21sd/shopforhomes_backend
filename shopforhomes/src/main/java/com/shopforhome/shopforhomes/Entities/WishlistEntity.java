@@ -21,6 +21,12 @@ public class WishlistEntity {
 
     private String imagePaths;  
 
+    private String productName;
+
+    private String productDescription;  
+
+    private String category;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();  
 }
