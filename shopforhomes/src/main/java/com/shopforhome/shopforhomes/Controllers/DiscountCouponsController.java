@@ -8,8 +8,6 @@ import com.shopforhome.shopforhomes.DTO.DiscountCouponsDTO;
 import com.shopforhome.shopforhomes.Entities.DiscountCouponsEntity;
 import com.shopforhome.shopforhomes.Services.DiscountCouponsService;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/coupons")
 public class DiscountCouponsController {

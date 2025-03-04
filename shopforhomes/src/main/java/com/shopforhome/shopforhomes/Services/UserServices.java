@@ -4,6 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.shopforhome.shopforhomes.Dao.UserDao;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
@@ -24,18 +27,21 @@ public class UserServices {
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-    
+
     // Update the user
     public ResponseEntity<UserEntity> updateUser(String uid, UserEntity user) {
         return userDao.findById(uid)
-                .map(userObj -> {
-                    userObj.setName(user.getName());
-                    userObj.setEmail(user.getEmail());
-                    userObj.setPassword(user.getPassword());
-                    userObj.setRole(user.getRole());
-                    userObj.setPhone(user.getPhone());
-                    return new ResponseEntity<>(userDao.save(userObj), HttpStatus.OK);
+                .map(existingUser -> {
+                    if (user.getName() != null)
+                        existingUser.setName(user.getName());
+                    if (user.getEmail() != null)
+                        existingUser.setEmail(user.getEmail());
+                    if (user.getPhone() != null)
+                        existingUser.setPhone(user.getPhone());
+
+                    return new ResponseEntity<>(userDao.save(existingUser), HttpStatus.OK);
                 })
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
+
 }

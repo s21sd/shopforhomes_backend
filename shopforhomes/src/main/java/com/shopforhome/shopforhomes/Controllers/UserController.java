@@ -19,13 +19,16 @@ public class UserController {
     public ResponseEntity<UserEntity> saveTheUser(@RequestBody UserEntity user) {
         return userServices.saveUser(user);
     }
+
     // Get the user
     @GetMapping("get/{uid}")
     public ResponseEntity<UserEntity> getUser(@PathVariable String uid) {
         return userServices.getUser(uid);
     }
-    @PutMapping("update/{uid}")
+
+    @PatchMapping("update/{uid}")
     public ResponseEntity<UserEntity> updateUser(@PathVariable String uid, @RequestBody UserEntity user) {
         return userServices.updateUser(uid, user);
     }
+
 }

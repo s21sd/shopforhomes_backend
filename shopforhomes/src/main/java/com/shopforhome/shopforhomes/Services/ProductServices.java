@@ -20,7 +20,7 @@ public class ProductServices {
     @Autowired
     private UserDao userDao;
 
-    // Get all products 
+    // Get all products
     public ResponseEntity<List<ProductsEntity>> getAllProducts(String uid) {
         Optional<UserEntity> user = userDao.findById(uid);
         if (user.isEmpty() || !user.get().getRole().equalsIgnoreCase("Admin")) {
@@ -34,7 +34,7 @@ public class ProductServices {
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
-    // Get product by ID 
+    // Get product by ID
     public ResponseEntity<ProductsEntity> getProduct(String pid, String uid) {
         Optional<UserEntity> user = userDao.findById(uid);
         if (user.isEmpty() || !user.get().getRole().equalsIgnoreCase("Admin")) {
@@ -48,7 +48,7 @@ public class ProductServices {
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
-    // Add a new product 
+    // Add a new product
     public ResponseEntity<ProductsEntity> addProduct(ProductsEntity product) {
         ProductsEntity savedProduct = productDao.save(product);
         return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
@@ -56,5 +56,13 @@ public class ProductServices {
 
     public List<ProductsEntity> searchProducts(String query) {
         return productDao.searchProducts(query);
+    }
+
+    public List<ProductsEntity> getAllProductsWithoutId() {
+        return productDao.findAll();
+    }
+
+    public Optional<ProductsEntity> getProductById(String pid) {
+        return productDao.findById(pid);
     }
 }
