@@ -11,14 +11,16 @@ public class CartResponseDTO {
     private String productName;
     private double productPrice;
     private int quantity;
+    private String imagePaths;
 
-    public CartResponseDTO(String uid, String pid, String productName, double productPrice, int quantity) 
+    public CartResponseDTO(String uid, String pid, String productName, double productPrice, int quantity, String imagePaths) 
     {
         this.uid = uid;
         this.pid = pid;
         this.productName = productName;
         this.productPrice = productPrice;
         this.quantity = quantity;
+        this.imagePaths = imagePaths;
     }
 }
 

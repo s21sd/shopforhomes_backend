@@ -51,7 +51,8 @@ public class CartService {
                         cartItem.getProduct().getPid(),
                         cartItem.getProductName(),
                         cartItem.getProductPrice(),
-                        cartItem.getQuantity()
+                        cartItem.getQuantity(),
+                        cartItem.getImagePaths()
                 ))
                 .collect(Collectors.toList());
 
@@ -73,15 +74,20 @@ public class CartService {
         CartEntity cartItem = new CartEntity();
         cartItem.setUser(user.get());
         cartItem.setProduct(product.get());
-
-        // Auto-fetch product name and price from ProductsEntity
         cartItem.setProductName(product.get().getName());
         cartItem.setProductPrice(product.get().getPrice());
-
-        // Ensure quantity is valid (at least 1)
+        cartItem.setImagePaths(product.get().getImagePaths());
         cartItem.setQuantity(Math.max(quantity, 1));
 
         CartEntity savedCartItem = cartDao.save(cartItem);
         return new ResponseEntity<>(savedCartItem, HttpStatus.CREATED);
+
+    }
+        public ResponseEntity<Void> removeFromCart(String cartId) {
+        if (!cartDao.existsById(cartId)) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        cartDao.deleteById(cartId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

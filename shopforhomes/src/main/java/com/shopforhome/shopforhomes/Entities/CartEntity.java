@@ -24,6 +24,9 @@ public class CartEntity {
 
     @Column(name = "product_price", nullable = false)
     private double productPrice;
+    
+    @Column(name = "image_paths")
+    private String imagePaths; 
 
     @Column(nullable = false, columnDefinition = "INT DEFAULT 1")
     private int quantity;

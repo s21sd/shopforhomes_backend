@@ -17,11 +17,6 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    // @GetMapping
-    // public ResponseEntity<List<CartResponseDTO>> getCartItems() {
-    //     return cartService.getAllCartItems();
-    // }
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<CartResponseDTO>> getCartItemsByUser(@PathVariable String userId) {
         return cartService.getCartItemsByUserId(userId);
@@ -31,5 +26,9 @@ public class CartController {
     public ResponseEntity<CartEntity> addToCart(@RequestBody CartRequest request) {
     return cartService.addToCart(request.getUserId(), request.getProductId(), request.getQuantity());
     }
-
+    
+    @DeleteMapping("/remove/{cartId}")
+    public ResponseEntity<Void> removeFromCart(@PathVariable String cartId) {
+        return cartService.removeFromCart(cartId);
+    }
 }
