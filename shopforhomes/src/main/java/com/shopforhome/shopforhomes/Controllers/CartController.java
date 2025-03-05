@@ -27,8 +27,10 @@ public class CartController {
     return cartService.addToCart(request.getUserId(), request.getProductId(), request.getQuantity());
     }
     
-    @DeleteMapping("/remove/{cartId}")
-    public ResponseEntity<Void> removeFromCart(@PathVariable String cartId) {
-        return cartService.removeFromCart(cartId);
-    }
+    @DeleteMapping("/remove/{userId}/{pid}")
+    public ResponseEntity<Void> removeFromCart(@PathVariable String userId, @PathVariable String pid) {
+    return cartService.removeFromCart(userId, pid);
+}
+
+
 }

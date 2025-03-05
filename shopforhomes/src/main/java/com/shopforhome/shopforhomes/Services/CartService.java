@@ -83,11 +83,16 @@ public class CartService {
         return new ResponseEntity<>(savedCartItem, HttpStatus.CREATED);
 
     }
-        public ResponseEntity<Void> removeFromCart(String cartId) {
-        if (!cartDao.existsById(cartId)) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        cartDao.deleteById(cartId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<Void> removeFromCart(String userId, String pid) {
+    Optional<CartEntity> cartItem = cartDao.findByUser_UidAndProduct_Pid(userId, pid);
+
+    if (cartItem.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    cartDao.delete(cartItem.get());
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+}
+
+
 }
