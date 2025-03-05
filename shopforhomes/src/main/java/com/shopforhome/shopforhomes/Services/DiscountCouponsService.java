@@ -50,20 +50,20 @@ public class DiscountCouponsService {
     }
     
     // Add a new discount coupon
-    public ResponseEntity<DiscountCouponsEntity> addCoupon(DiscountCouponsEntity coupon) {
+    public ResponseEntity<String> addCoupon(DiscountCouponsEntity coupon) {
         
         if (coupon.getUser() == null || coupon.getUser().getUid() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 Bad Request if user is missing
+            return new ResponseEntity<>("400",HttpStatus.BAD_REQUEST); // 400 Bad Request if user is missing
         }
     
         Optional<UserEntity> user = userDao.findById(coupon.getUser().getUid());
         if (user.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // 404 if user not found
+            return new ResponseEntity<>("User doesn't exists",HttpStatus.NOT_FOUND); // 404 if user not found
         }
 
         if (!user.get().getRole().equals("Admin")) 
         {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Forbidden if not Admin
+            return new ResponseEntity<>("Oops! You are not an admin",HttpStatus.FORBIDDEN); // 403 Forbidden if not Admin
         }
     
         coupon.setUser(user.get());
@@ -71,28 +71,21 @@ public class DiscountCouponsService {
         // Check if this user already has this coupon
         Optional<DiscountCouponsEntity> existingCoupon = discountCouponsDao.findByCodeAndUser(coupon.getCode(), user.get());
         if (existingCoupon.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT); // 409 Conflict if user already has this coupon
+            return new ResponseEntity<>("You have already applied this coupon",HttpStatus.CONFLICT); // 409 Conflict if user already has this coupon
         }
     
         // Save the new coupon for this user
         DiscountCouponsEntity savedCoupon = discountCouponsDao.save(coupon);
-        return new ResponseEntity<>(savedCoupon, HttpStatus.CREATED);
+        return new ResponseEntity<>("Discount coupon added", HttpStatus.CREATED);
     }
     
+    public ResponseEntity<String>removeDiscountcoupons(String discountId){
+        Optional<DiscountCouponsEntity> discountCouponsEntity = discountCouponsDao.findById(discountId);
+        if(discountCouponsEntity.isPresent()){
+            discountCouponsDao.delete(discountCouponsEntity.get());
+            return new ResponseEntity<>("Discount coupon deleted", HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Discount coupon not found", HttpStatus.NOT_FOUND);
+    }
 
-    // // Apply a discount by updating isApplied to true
-    // public ResponseEntity<DiscountCouponsEntity> applyDiscount(String code) {
-    //     Optional<DiscountCouponsEntity> coupon = discountCouponsDao.findByCode(code);
-    //     if (coupon.isPresent()) {
-    //         DiscountCouponsEntity discount = coupon.get();
-    //         if (!discount.isApplied()) {
-    //             discount.setApplied(true);
-    //             discountCouponsDao.save(discount);
-    //             return new ResponseEntity<>(discount, HttpStatus.OK);
-    //         } else {
-    //             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // 400 if already applied
-    //         }
-    //     }
-    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
 }

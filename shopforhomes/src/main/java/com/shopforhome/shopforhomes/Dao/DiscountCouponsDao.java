@@ -10,4 +10,5 @@ public interface DiscountCouponsDao extends JpaRepository<DiscountCouponsEntity,
     Optional<DiscountCouponsEntity> findByCodeAndUser(String code, UserEntity user); 
     List<DiscountCouponsEntity> findByUser(UserEntity user);  
     Optional<DiscountCouponsEntity> findByCode(String code);
+    Optional<DiscountCouponsEntity> findByDiscountId(String discountId);
 }

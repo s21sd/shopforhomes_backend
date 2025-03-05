@@ -29,7 +29,7 @@ public class DiscountCouponsController {
 
     // Add a new discount coupon
     @PostMapping("/addDiscount")
-    public ResponseEntity<DiscountCouponsEntity> addCoupon(@RequestBody DiscountCouponsEntity coupon) {
+    public ResponseEntity<String> addCoupon(@RequestBody DiscountCouponsEntity coupon, @RequestParam String uid) {
         return discountCouponsService.addCoupon(coupon);
     }
 
@@ -38,4 +38,9 @@ public class DiscountCouponsController {
     // public ResponseEntity<DiscountCouponsEntity> applyDiscount(@PathVariable String code) {
     //     return discountCouponsService.applyDiscount(code);
     // }
+
+    @DeleteMapping("/delete/{discountId}")
+    public ResponseEntity<String> removeDiscountcoupons(@PathVariable String discountId) {
+        return discountCouponsService.removeDiscountcoupons(discountId);
+    }
 }
