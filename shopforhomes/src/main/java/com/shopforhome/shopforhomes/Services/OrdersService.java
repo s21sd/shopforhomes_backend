@@ -12,6 +12,9 @@ import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
 // import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Entities.OrderStatus;
+import com.shopforhome.shopforhomes.Entities.DiscountCouponsEntity;
+import com.shopforhome.shopforhomes.Dao.DiscountCouponsDao;
+import com.shopforhome.shopforhomes.Services.DiscountCouponsService;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +28,12 @@ public class OrdersService {
     @Autowired
     private OrdersDao ordersDao;
 
+    @Autowired
+    private DiscountCouponsService discountCouponsService;
+
+    @Autowired
+    private DiscountCouponsDao discountCouponsDao;
+
     // Get all orders for a user
     public ResponseEntity<List<OrderDTO>> getOrdersByUser(String userId) {
         List<OrdersEntity> orders = ordersDao.findByUser_Uid(userId);
@@ -36,25 +45,13 @@ public class OrdersService {
     }
 
 
-    // Place a new order
-    // public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) {
-    // if (order.getUser() == null || order.getUser().getUid() == null) {
-    //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    // }
-    // Optional<UserEntity> userOpt = userDao.findById(order.getUser().getUid());
-    // if (userOpt.isEmpty()) {
-    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
-    // order.setUser(userOpt.get());
-    // order.setStatus(OrderStatus.PENDING);
-    // OrdersEntity savedOrder = ordersDao.save(order);
-    // return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
-    // }
+
 
     // place a order
     public ResponseEntity<OrdersEntity> placeOrder(Map<String, Object> orderData) {
     String uid = (String) orderData.get("uid");
     Double totalPrice = ((Number) orderData.get("totalPrice")).doubleValue();
+    String couponCode = (String) orderData.get("couponCode");
     
         if (uid == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,6 +61,22 @@ public class OrdersService {
         if (userOpt.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        if (couponCode != null && !couponCode.trim().isEmpty()) {
+            ResponseEntity<String> validationResponse = discountCouponsService.validateCouponForUser(couponCode, uid);
+            if (validationResponse.getStatusCode() != HttpStatus.OK) {
+                return new ResponseEntity<>(validationResponse.getStatusCode());
+            }
+
+            Optional<DiscountCouponsEntity> couponOpt = discountCouponsDao.findByCode(couponCode);
+            if (couponOpt.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+
+            DiscountCouponsEntity coupon = couponOpt.get();
+            double discountAmount = coupon.getDiscount();
+            totalPrice = Math.max(0, totalPrice - discountAmount);
+        }
+
 
         OrdersEntity order = new OrdersEntity();
         order.setUser(userOpt.get());
@@ -73,43 +86,7 @@ public class OrdersService {
         OrdersEntity savedOrder = ordersDao.save(order);
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
-
-    // public ResponseEntity<OrdersEntity> placeOrder(OrdersEntity order) 
-    // {
-    //     // if (order.getUser() == null || order.getUser().getUid() == null) {
-    //     //     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    //     // }
-    //     Optional<UserEntity> userOpt = userDao.findById(order.getUser().getUid());
-    //     if (userOpt.isEmpty()) {
-    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //     }
-    //     order.setUser(userOpt.get());
-    //     order.setStatus(OrderStatus.PENDING);
-    //     OrdersEntity savedOrder = ordersDao.save(order);
-    //     return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
-    // }
-
-    // Fetch all the orders
-    // public ResponseEntity<List<OrderDTO>> getAllOrders() {
-    //     List<OrdersEntity> orders = ordersDao.findAll();
-    //     List<OrderDTO> orderDTOs = orders.stream()
-    //             .map(order -> new OrderDTO(order.getOid(), order.getUser().getUid(), order.getTotalPrice(), order.getStatus(), order.getCreatedAt()))
-    //             .collect(Collectors.toList());
-    //     return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
-    // }
-
-
-    // Update order status
-    // public ResponseEntity<OrdersEntity> updateOrderStatus(String orderId, OrderStatus status) {
-    //     Optional<OrdersEntity> existingOrder = ordersDao.findById(orderId);
-    //     if (existingOrder.isPresent()) {
-    //         OrdersEntity order = existingOrder.get();
-    //         order.setStatus(status);
-    //         ordersDao.save(order);
-    //         return new ResponseEntity<>(order, HttpStatus.OK);
-    //     }
-    //     return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    // }
+ 
 
     public ResponseEntity<OrdersEntity> updateOrderStatus(String orderId, OrderStatus status) {
         Optional<OrdersEntity> orderOpt = ordersDao.findById(orderId);
