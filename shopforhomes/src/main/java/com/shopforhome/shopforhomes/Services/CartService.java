@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class CartService {
 
@@ -28,21 +29,6 @@ public class CartService {
 
     @Autowired
     private ProductDao productDao;
-
-    // public ResponseEntity<List<CartResponseDTO>> getAllCartItems() 
-    // {
-    //     List<CartResponseDTO> response = cartDao.findAll().stream()
-    //             .map(cartItem -> new CartResponseDTO(
-    //                     cartItem.getUser().getUid(),
-    //                     cartItem.getProduct().getPid(),
-    //                     cartItem.getProductName(),
-    //                     cartItem.getProductPrice(),
-    //                     cartItem.getQuantity()
-    //             ))
-    //             .collect(Collectors.toList());
-
-    //     return new ResponseEntity<>(response, HttpStatus.OK);
-    // }
 
     public ResponseEntity<List<CartResponseDTO>> getCartItemsByUserId(String userId) {
         List<CartResponseDTO> response = cartDao.findByUser_Uid(userId).stream()
@@ -56,19 +42,26 @@ public class CartService {
                 ))
                 .collect(Collectors.toList());
 
-        return response.isEmpty() ? new ResponseEntity<>(HttpStatus.NOT_FOUND) : new ResponseEntity<>(response, HttpStatus.OK);
+        return response.isEmpty()
+                ? new ResponseEntity<>(HttpStatus.NOT_FOUND)
+                : new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<CartEntity> addToCart(String userId, String productId, int quantity) {
+    public ResponseEntity<String> addToCart(String userId, String productId, int quantity) {
         if (productId == null || userId == null) {
-            throw new IllegalArgumentException("Product ID and User ID must not be null");
+            return new ResponseEntity<>("Product ID and User ID must not be null", HttpStatus.BAD_REQUEST);
         }
-        
+
         Optional<UserEntity> user = userDao.findById(userId);
         Optional<ProductsEntity> product = productDao.findById(productId);
 
         if (user.isEmpty() || product.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);  
+            return new ResponseEntity<>("User or Product not found", HttpStatus.NOT_FOUND);
+        }
+
+        Optional<CartEntity> existingCartItem = cartDao.findByUser_UidAndProduct_Pid(userId, productId);
+        if (existingCartItem.isPresent()) {
+            return new ResponseEntity<>("Item is already in the cart", HttpStatus.CONFLICT);
         }
 
         CartEntity cartItem = new CartEntity();
@@ -79,20 +72,18 @@ public class CartService {
         cartItem.setImagePaths(product.get().getImagePaths());
         cartItem.setQuantity(Math.max(quantity, 1));
 
-        CartEntity savedCartItem = cartDao.save(cartItem);
-        return new ResponseEntity<>(savedCartItem, HttpStatus.CREATED);
-
-    }
-    public ResponseEntity<Void> removeFromCart(String userId, String pid) {
-    Optional<CartEntity> cartItem = cartDao.findByUser_UidAndProduct_Pid(userId, pid);
-
-    if (cartItem.isEmpty()) {
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        cartDao.save(cartItem);
+        return new ResponseEntity<>("Item added to cart successfully", HttpStatus.CREATED);
     }
 
-    cartDao.delete(cartItem.get());
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-}
+    public ResponseEntity<String> removeFromCart(String userId, String pid) {
+        Optional<CartEntity> cartItem = cartDao.findByUser_UidAndProduct_Pid(userId, pid);
 
+        if (cartItem.isEmpty()) {
+            return new ResponseEntity<>("Cart Item not found", HttpStatus.NOT_FOUND);
+        }
 
+        cartDao.delete(cartItem.get());
+        return new ResponseEntity<>("Cart Item successfully removed", HttpStatus.OK);
+    }
 }

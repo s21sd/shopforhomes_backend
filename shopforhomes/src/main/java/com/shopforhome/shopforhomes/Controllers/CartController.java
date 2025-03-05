@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("api/cart")
 public class CartController {
@@ -23,14 +24,12 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CartEntity> addToCart(@RequestBody CartRequest request) {
-    return cartService.addToCart(request.getUserId(), request.getProductId(), request.getQuantity());
+    public ResponseEntity<String> addToCart(@RequestBody CartRequest request) {
+        return cartService.addToCart(request.getUserId(), request.getProductId(), request.getQuantity());
     }
-    
+
     @DeleteMapping("/remove/{userId}/{pid}")
-    public ResponseEntity<Void> removeFromCart(@PathVariable String userId, @PathVariable String pid) {
-    return cartService.removeFromCart(userId, pid);
-}
-
-
+    public ResponseEntity<String> removeFromCart(@PathVariable String userId, @PathVariable String pid) {
+        return cartService.removeFromCart(userId, pid);
+    }
 }
