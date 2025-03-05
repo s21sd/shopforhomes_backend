@@ -16,7 +16,7 @@ public class WishlistController {
 
     
     @PostMapping("add")
-    public ResponseEntity<WishlistEntity> addToWishlist(@RequestBody WishlistEntity wishlist) {
+    public ResponseEntity<String> addToWishlist(@RequestBody WishlistEntity wishlist) {
         return wishlistService.addToWishlist(wishlist);
     }
  
@@ -26,7 +26,7 @@ public class WishlistController {
     }
 
     @DeleteMapping("remove/{wid}")
-    public ResponseEntity<Void> removeFromWishlist(@PathVariable String wid) {
+    public ResponseEntity<String> removeFromWishlist(@PathVariable String wid) {
         return wishlistService.removeFromWishlist(wid);
     }
 }
