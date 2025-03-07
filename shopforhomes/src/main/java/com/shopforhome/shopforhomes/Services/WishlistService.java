@@ -28,6 +28,7 @@ public class WishlistService {
             wishlist.setProductName(product.get().getName());
             wishlist.setProductDescription(product.get().getDescription());
             wishlist.setCategory(product.get().getCategory());
+<<<<<<< HEAD
             wishlistDao.save(wishlist);
         } else {
             // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -35,7 +36,14 @@ public class WishlistService {
         }
 
         // return new ResponseEntity<>(wishlistDao.save(wishlist), HttpStatus.CREATED);
+=======
+
+            wishlistDao.save(wishlist);
+>>>>>>> 096c6b2255ef0d7a3ef5ccfffe35c4c030e017d8
         return new ResponseEntity<>("Product added to wishlist", HttpStatus.CREATED);
+    } else {
+        return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+    }
     }
 
     public ResponseEntity<List<WishlistEntity>> getUserWishlist(String uid) {

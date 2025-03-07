@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Services.ProductServices;
+import com.shopforhome.shopforhomes.DTO.ProductDiscountDTO;
+import com.shopforhome.shopforhomes.Services.DiscountCouponsService;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,9 @@ public class ProductController {
 
     @Autowired
     private ProductServices productServices;
+
+    @Autowired
+    private DiscountCouponsService discountCouponsService;
 
     // Get all products from the
 
@@ -36,6 +41,24 @@ public class ProductController {
     @GetMapping("get/{pid}")
     public ResponseEntity<ProductsEntity> getProduct(@PathVariable String pid, @RequestParam String uid) {
         return productServices.getProduct(pid, uid);
+    }
+
+    @GetMapping("get/{pid}/apply-coupon")
+    public ResponseEntity<ProductDiscountDTO> applyDiscountToProdcut(
+        @PathVariable String pid, 
+        @RequestParam String couponCode,
+        @RequestParam String uid
+    ) {
+        // First validate the coupon for the user
+        ResponseEntity<String> validationResult = discountCouponsService.validateCouponForUser(couponCode, uid);
+        
+        // If coupon is not valid, return the appropriate response
+        if (validationResult.getStatusCode() != org.springframework.http.HttpStatus.OK) {
+            return new ResponseEntity<>(validationResult.getStatusCode());
+        }
+
+        // If coupon is valid, apply it to the product
+        return productServices.getProductWithDiscount(pid, couponCode);
     }
 
     // Add a product

@@ -8,8 +8,13 @@ import com.shopforhome.shopforhomes.Dao.ProductDao;
 import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Dao.UserDao;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
+import com.shopforhome.shopforhomes.DTO.ProductDiscountDTO;
+import com.shopforhome.shopforhomes.Entities.DiscountCouponsEntity;
+import com.shopforhome.shopforhomes.Dao.UserDao;
+import com.shopforhome.shopforhomes.Dao.DiscountCouponsDao;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServices {
@@ -19,6 +24,14 @@ public class ProductServices {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private DiscountCouponsService discountCouponsService;
+
+
+    @Autowired
+    private DiscountCouponsDao discountCouponsDao;
+    
 
     // Get all products
     public ResponseEntity<List<ProductsEntity>> getAllProducts(String uid) {
@@ -64,5 +77,43 @@ public class ProductServices {
 
     public Optional<ProductsEntity> getProductById(String pid) {
         return productDao.findById(pid);
+    }
+
+    public ResponseEntity<ProductDiscountDTO> getProductWithDiscount(String pid, String couponCode) {
+        // Find the product
+        Optional<ProductsEntity> productOptional = productDao.findById(pid);
+        if (productOptional.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        ProductsEntity product = productOptional.get();
+
+        // Find the coupon
+        Optional<DiscountCouponsEntity> couponOptional = discountCouponsDao.findByCode(couponCode);
+        if (couponOptional.isEmpty()) {
+            // If no coupon found, return product without discount
+            return new ResponseEntity<>(
+                new ProductDiscountDTO(product, null), 
+                HttpStatus.OK
+            );
+        }
+
+        DiscountCouponsEntity coupon = couponOptional.get();
+
+        // Create and return product with discount
+        return new ResponseEntity<>(
+            new ProductDiscountDTO(product, coupon), 
+            HttpStatus.OK
+        );
+    }
+
+    // Get all products with potential discounts
+    public ResponseEntity<List<ProductDiscountDTO>> getAllProductsWithDiscounts() {
+        List<ProductsEntity> products = productDao.findAll();
+        
+        List<ProductDiscountDTO> productsWithDiscounts = products.stream()
+            .map(product -> new ProductDiscountDTO(product, null))
+            .collect(Collectors.toList());
+        
+        return new ResponseEntity<>(productsWithDiscounts, HttpStatus.OK);
     }
 }

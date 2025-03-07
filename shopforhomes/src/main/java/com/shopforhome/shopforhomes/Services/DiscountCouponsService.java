@@ -12,7 +12,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.Optional;
 @Service
 public class DiscountCouponsService {
 
@@ -21,7 +28,7 @@ public class DiscountCouponsService {
 
     @Autowired
     private UserDao userDao;
-
+    
     // Convert Entity to DTO
     private DiscountCouponsDTO convertToDTO(DiscountCouponsEntity entity) {
         return new DiscountCouponsDTO(
@@ -86,6 +93,43 @@ public class DiscountCouponsService {
             return new ResponseEntity<>("Discount coupon deleted", HttpStatus.OK);
         }
         return new ResponseEntity<>("Discount coupon not found", HttpStatus.NOT_FOUND);
+    }
+        public ResponseEntity<String> validateCouponForUser(String couponCode, String uid) {
+        // Find the coupon
+        Optional<DiscountCouponsEntity> couponOptional = discountCouponsDao.findByCode(couponCode);
+        if (couponOptional.isEmpty()) {
+            return new ResponseEntity<>("Coupon not found", HttpStatus.NOT_FOUND);
+        }
+
+        DiscountCouponsEntity coupon = couponOptional.get();
+
+        // Check coupon expiry
+        if (coupon.getExpiryDate().before(Date.valueOf(LocalDate.now()))) {
+            return new ResponseEntity<>("Coupon has expired", HttpStatus.BAD_REQUEST);
+        }
+
+        // Check if coupon is already applied
+        if (coupon.getIsApplied() == 1) {
+            return new ResponseEntity<>("Coupon has already been used", HttpStatus.CONFLICT);
+        }
+
+        // Verify the user
+        Optional<UserEntity> userOptional = userDao.findById(uid);
+        if (userOptional.isEmpty()) {
+            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        // Mark coupon as applied
+        coupon.setIsApplied(1);
+        discountCouponsDao.save(coupon);
+
+        return new ResponseEntity<>("Coupon is valid", HttpStatus.OK);
+    }
+
+    // Apply discount to a product price
+    public double applyDiscount(double originalPrice, DiscountCouponsEntity coupon) {
+        // Directly subtract the discount amount (not a percentage)
+        return originalPrice - coupon.getDiscount();
     }
 
 }

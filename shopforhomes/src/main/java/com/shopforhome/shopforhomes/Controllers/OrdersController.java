@@ -20,11 +20,7 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
-    // Get all orders
-    // @GetMapping("/all")
-    // public ResponseEntity<List<OrderDTO>> getAllOrders() {
-    //     return ordersService.getAllOrders();
-    // }
+    
 
     // Get all orders for a specific user
     @GetMapping("/{userId}")
@@ -32,11 +28,7 @@ public class OrdersController {
         return ordersService.getOrdersByUser(userId);
     }
 
-    // Place a new order
-    // @PostMapping("/place")
-    // public ResponseEntity<OrdersEntity> placeOrder(@RequestBody OrdersEntity order) {
-    //     return ordersService.placeOrder(order);
-    // }
+    
     
     @PostMapping("/place")
     public ResponseEntity<OrdersEntity> placeOrder(@RequestBody Map<String, Object> orderData) {

@@ -15,12 +15,6 @@ public class DiscountCouponsController {
     @Autowired
     private DiscountCouponsService discountCouponsService;
 
-    // Get all discount coupons
-    // @GetMapping
-    // public ResponseEntity<List<DiscountCouponsDTO>> getAllCoupons() {
-    //     return discountCouponsService.getAllCoupons();
-    // }
-
     // Get a discount coupon by code
     @GetMapping("/{code}")
     public ResponseEntity<DiscountCouponsDTO> getCouponByCode(@PathVariable String code) {
@@ -33,11 +27,7 @@ public class DiscountCouponsController {
         return discountCouponsService.addCoupon(coupon);
     }
 
-    // // Apply a discount by updating isApplied to true
-    // @PutMapping("/apply/{code}")
-    // public ResponseEntity<DiscountCouponsEntity> applyDiscount(@PathVariable String code) {
-    //     return discountCouponsService.applyDiscount(code);
-    // }
+
 
     @DeleteMapping("/delete/{discountId}")
     public ResponseEntity<String> removeDiscountcoupons(@PathVariable String discountId) {
