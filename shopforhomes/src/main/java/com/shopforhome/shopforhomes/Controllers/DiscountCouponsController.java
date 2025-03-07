@@ -27,8 +27,6 @@ public class DiscountCouponsController {
         return discountCouponsService.addCoupon(coupon);
     }
 
-
-
     @DeleteMapping("/delete/{discountId}")
     public ResponseEntity<String> removeDiscountcoupons(@PathVariable String discountId) {
         return discountCouponsService.removeDiscountcoupons(discountId);

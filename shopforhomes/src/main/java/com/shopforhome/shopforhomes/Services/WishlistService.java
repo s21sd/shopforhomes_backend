@@ -30,9 +30,9 @@ public class WishlistService {
             wishlist.setCategory(product.get().getCategory());
 
             wishlistDao.save(wishlist);
-        return new ResponseEntity<>("Product added to wishlist", HttpStatus.CREATED);
+        return new ResponseEntity<>("201", HttpStatus.CREATED);
     } else {
-        return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("404", HttpStatus.NOT_FOUND);
     }
     }
 
@@ -53,9 +53,9 @@ public class WishlistService {
     public ResponseEntity<String> removeFromWishlist(String wid) {
         if (wishlistDao.existsById(wid)) {
             wishlistDao.deleteById(wid);
-            return new ResponseEntity<>("Item removed from Wishlist",HttpStatus.OK);
+            return new ResponseEntity<>("200",HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Item not in Wishlist",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("404",HttpStatus.NOT_FOUND);
         }
     }
 }
