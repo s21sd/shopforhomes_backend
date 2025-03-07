@@ -8,8 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/cart")
@@ -24,12 +25,13 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addToCart(@RequestBody CartRequest request) {
+    public ResponseEntity<Map<String, String>> addToCart(@RequestBody CartRequest request) {
         return cartService.addToCart(request.getUserId(), request.getProductId(), request.getQuantity());
     }
 
     @DeleteMapping("/remove/{userId}/{pid}")
-    public ResponseEntity<String> removeFromCart(@PathVariable String userId, @PathVariable String pid) {
+    public ResponseEntity<Map<String, String>> removeFromCart(@PathVariable String userId, @PathVariable String pid) {
         return cartService.removeFromCart(userId, pid);
     }
+
 }

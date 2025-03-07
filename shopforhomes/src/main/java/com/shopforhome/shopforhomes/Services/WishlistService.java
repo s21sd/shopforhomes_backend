@@ -24,17 +24,16 @@ public class WishlistService {
 
     public ResponseEntity<String> addToWishlist(WishlistEntity wishlist) {
         Optional<ProductsEntity> product = productDao.findById(wishlist.getPid());
-        if (product.isPresent()) {
+        if (!product.isPresent()) {
             wishlist.setProductName(product.get().getName());
             wishlist.setProductDescription(product.get().getDescription());
             wishlist.setCategory(product.get().getCategory());
-
             wishlistDao.save(wishlist);
         return new ResponseEntity<>("201", HttpStatus.CREATED);
     } else {
         return new ResponseEntity<>("404", HttpStatus.NOT_FOUND);
     }
-    }
+        }
 
     public ResponseEntity<List<WishlistEntity>> getUserWishlist(String uid) {
         List<WishlistEntity> wishlists = wishlistDao.findByUid(uid).stream().map(wishlist -> {
@@ -44,8 +43,10 @@ public class WishlistService {
                 wishlist.setProductDescription(p.getDescription());
                 wishlist.setCategory(p.getCategory());
             });
+
             return wishlist;
         }).collect(Collectors.toList());
+        System.out.println(wishlists);
 
         return new ResponseEntity<>(wishlists, HttpStatus.OK);
     }
@@ -56,6 +57,6 @@ public class WishlistService {
             return new ResponseEntity<>("200",HttpStatus.OK);
         } else {
             return new ResponseEntity<>("404",HttpStatus.NOT_FOUND);
-        }
+        } 
     }
 }

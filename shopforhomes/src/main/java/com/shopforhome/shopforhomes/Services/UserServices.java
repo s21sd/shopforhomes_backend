@@ -29,7 +29,7 @@ public class UserServices {
     }
 
     // Update the user
-    public ResponseEntity<UserEntity> updateUser(String uid, UserEntity user) {
+    public ResponseEntity<String> updateUser(String uid, UserEntity user) {
         return userDao.findById(uid)
                 .map(existingUser -> {
                     if (user.getName() != null)
@@ -39,9 +39,10 @@ public class UserServices {
                     if (user.getPhone() != null)
                         existingUser.setPhone(user.getPhone());
 
-                    return new ResponseEntity<>(userDao.save(existingUser), HttpStatus.OK);
+                    userDao.save(existingUser);
+                    return new ResponseEntity<>("201", HttpStatus.OK);
                 })
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> new ResponseEntity<>("404",HttpStatus.NOT_FOUND));
     }
 
 }
