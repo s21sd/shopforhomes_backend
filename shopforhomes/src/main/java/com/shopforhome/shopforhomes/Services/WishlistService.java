@@ -24,14 +24,16 @@ public class WishlistService {
 
     public ResponseEntity<String> addToWishlist(WishlistEntity wishlist) {
         Optional<ProductsEntity> product = productDao.findById(wishlist.getPid());
-        if (product.isPresent()) {
+        if (!product.isPresent()) {
             wishlist.setProductName(product.get().getName());
             wishlist.setProductDescription(product.get().getDescription());
             wishlist.setCategory(product.get().getCategory());
+            wishlistDao.save(wishlist);
         } else {
             // return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>("Product not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Product Already in the list", HttpStatus.NOT_FOUND);
         }
+
         // return new ResponseEntity<>(wishlistDao.save(wishlist), HttpStatus.CREATED);
         return new ResponseEntity<>("Product added to wishlist", HttpStatus.CREATED);
     }
@@ -44,8 +46,10 @@ public class WishlistService {
                 wishlist.setProductDescription(p.getDescription());
                 wishlist.setCategory(p.getCategory());
             });
+
             return wishlist;
         }).collect(Collectors.toList());
+        System.out.println(wishlists);
 
         return new ResponseEntity<>(wishlists, HttpStatus.OK);
     }
@@ -53,9 +57,9 @@ public class WishlistService {
     public ResponseEntity<String> removeFromWishlist(String wid) {
         if (wishlistDao.existsById(wid)) {
             wishlistDao.deleteById(wid);
-            return new ResponseEntity<>("Item removed from Wishlist",HttpStatus.OK);
+            return new ResponseEntity<>("Item removed from Wishlist", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Item not in Wishlist",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Item not in Wishlist", HttpStatus.NOT_FOUND);
         }
     }
 }

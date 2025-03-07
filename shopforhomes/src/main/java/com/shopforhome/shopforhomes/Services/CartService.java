@@ -13,10 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Service
 public class CartService {
@@ -38,8 +39,7 @@ public class CartService {
                         cartItem.getProductName(),
                         cartItem.getProductPrice(),
                         cartItem.getQuantity(),
-                        cartItem.getImagePaths()
-                ))
+                        cartItem.getImagePaths()))
                 .collect(Collectors.toList());
 
         return response.isEmpty()
@@ -47,21 +47,27 @@ public class CartService {
                 : new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    public ResponseEntity<String> addToCart(String userId, String productId, int quantity) {
+    public ResponseEntity<Map<String, String>> addToCart(String userId, String productId, int quantity) {
         if (productId == null || userId == null) {
-            return new ResponseEntity<>("Product ID and User ID must not be null", HttpStatus.BAD_REQUEST);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Product ID and User ID must not be null");
+            return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
         }
 
         Optional<UserEntity> user = userDao.findById(userId);
         Optional<ProductsEntity> product = productDao.findById(productId);
 
         if (user.isEmpty() || product.isEmpty()) {
-            return new ResponseEntity<>("User or Product not found", HttpStatus.NOT_FOUND);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "User or Product not found");
+            return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
         Optional<CartEntity> existingCartItem = cartDao.findByUser_UidAndProduct_Pid(userId, productId);
         if (existingCartItem.isPresent()) {
-            return new ResponseEntity<>("Item is already in the cart", HttpStatus.CONFLICT);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Item is already in the cart");
+            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
         }
 
         CartEntity cartItem = new CartEntity();
@@ -73,17 +79,28 @@ public class CartService {
         cartItem.setQuantity(Math.max(quantity, 1));
 
         cartDao.save(cartItem);
-        return new ResponseEntity<>("Item added to cart successfully", HttpStatus.CREATED);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Item added to cart successfully");
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    public ResponseEntity<String> removeFromCart(String userId, String pid) {
+
+    public ResponseEntity<Map<String, String>> removeFromCart(String userId, String pid) {
         Optional<CartEntity> cartItem = cartDao.findByUser_UidAndProduct_Pid(userId, pid);
-
+    
+        Map<String, String> response = new HashMap<>();
+    
         if (cartItem.isEmpty()) {
-            return new ResponseEntity<>("Cart Item not found", HttpStatus.NOT_FOUND);
+            response.put("message", "Cart item not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
-
+    
         cartDao.delete(cartItem.get());
-        return new ResponseEntity<>("Cart Item successfully removed", HttpStatus.OK);
+    
+        response.put("message", "Cart item deleted successfully");
+        return ResponseEntity.ok(response);
     }
+    
 }
