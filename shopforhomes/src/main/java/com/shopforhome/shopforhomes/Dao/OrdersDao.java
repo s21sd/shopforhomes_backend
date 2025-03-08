@@ -3,9 +3,11 @@ package com.shopforhome.shopforhomes.Dao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 // import com.shopforhome.shopforhomes.Entities.UserEntity;
+import com.shopforhome.shopforhomes.Entities.OrderStatus;
 
 import java.util.List;
 
 public interface OrdersDao extends JpaRepository<OrdersEntity, String> {
     List<OrdersEntity> findByUser_Uid(String uid);
+    List<OrdersEntity> findByUser_UidAndStatus(String uid, OrderStatus status);
 }

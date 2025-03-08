@@ -20,28 +20,22 @@ public class OrdersController {
     @Autowired
     private OrdersService ordersService;
 
-    
-
-    // Get all orders for a specific user
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<OrderDTO>> getUserOrders(@PathVariable String userId) {
-        return ordersService.getOrdersByUser(userId);
+    @PostMapping("/place/{userId}")
+    public ResponseEntity<OrdersEntity> placeOrder(@PathVariable String userId) {
+        return ordersService.placeOrder(userId);
     }
 
-    
-    
-    @PostMapping("/place")
-    public ResponseEntity<OrdersEntity> placeOrder(@RequestBody Map<String, Object> orderData) {
-    return ordersService.placeOrder(orderData);
+    // Get all pending orders for a user
+    @GetMapping("/pending/{userId}")
+    public ResponseEntity<List<OrderDTO>> getPendingOrders(@PathVariable String userId) {
+        return ordersService.getPendingOrdersByUser(userId);
     }
-
 
     // Update order status
     @PutMapping("/update/{orderId}")
     public ResponseEntity<OrdersEntity> updateOrderStatus(
-    @PathVariable String orderId,
-    @RequestBody Map<String, String> requestBody) 
-    {
+            @PathVariable String orderId,
+            @RequestBody Map<String, String> requestBody) {
 
         if (!requestBody.containsKey("status")) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Status is missing

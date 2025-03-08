@@ -63,29 +63,34 @@ public class CartService {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
+        // Check if the item already exists in the cart
         Optional<CartEntity> existingCartItem = cartDao.findByUser_UidAndProduct_Pid(userId, productId);
         if (existingCartItem.isPresent()) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Item is already in the cart");
-            return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+            // If the item exists, update the quantity
+            CartEntity cartItem = existingCartItem.get();
+            cartItem.setQuantity(cartItem.getQuantity() + quantity); // Increment the quantity
+            cartDao.save(cartItem);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Item quantity updated in cart");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        } else {
+            // If the item does not exist, add it to the cart
+            CartEntity cartItem = new CartEntity();
+            cartItem.setUser(user.get());
+            cartItem.setProduct(product.get());
+            cartItem.setProductName(product.get().getName());
+            cartItem.setProductPrice(product.get().getPrice());
+            cartItem.setImagePaths(product.get().getImagePaths());
+            cartItem.setQuantity(Math.max(quantity, 1)); // Ensure quantity is at least 1
+
+            cartDao.save(cartItem);
+
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Item added to cart successfully");
+            return new ResponseEntity<>(response, HttpStatus.CREATED);
         }
-
-        CartEntity cartItem = new CartEntity();
-        cartItem.setUser(user.get());
-        cartItem.setProduct(product.get());
-        cartItem.setProductName(product.get().getName());
-        cartItem.setProductPrice(product.get().getPrice());
-        cartItem.setImagePaths(product.get().getImagePaths());
-        cartItem.setQuantity(Math.max(quantity, 1));
-
-        cartDao.save(cartItem);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("message", "Item added to cart successfully");
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
-
 
     public ResponseEntity<Map<String, String>> removeFromCart(String userId, String pid) {
         Optional<CartEntity> cartItem = cartDao.findByUser_UidAndProduct_Pid(userId, pid);
@@ -102,5 +107,4 @@ public class CartService {
         response.put("message", "Cart item deleted successfully");
         return ResponseEntity.ok(response);
     }
-    
 }
