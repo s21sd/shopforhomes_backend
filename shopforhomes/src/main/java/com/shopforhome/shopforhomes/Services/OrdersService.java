@@ -40,7 +40,6 @@ public class OrdersService {
     @Autowired
     private CartDao cartDao;
 
-    // Fetch cart items for a user and calculate the total price
     private double calculateTotalPriceFromCart(String userId) {
         List<CartEntity> cartItems = cartDao.findByUser_Uid(userId);
         return cartItems.stream()
@@ -48,7 +47,6 @@ public class OrdersService {
                 .sum();
     }
 
-    // Place an order by fetching prices from the cart table
     public ResponseEntity<OrdersEntity> placeOrder(String userId) {
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -59,10 +57,8 @@ public class OrdersService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        // Calculate the total price from the cart
         double totalPrice = calculateTotalPriceFromCart(userId);
 
-        // Create a new order
         OrdersEntity order = new OrdersEntity();
         order.setUser(userOpt.get());
         order.setTotalPrice(totalPrice);
@@ -72,7 +68,6 @@ public class OrdersService {
         return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
     }
 
-    // Get all orders for a user with status PENDING
     public ResponseEntity<List<OrderDTO>> getPendingOrdersByUser(String userId) {
         List<OrdersEntity> pendingOrders = ordersDao.findByUser_UidAndStatus(userId, OrderStatus.PENDING);
         List<OrderDTO> orderDTOs = pendingOrders.stream()
@@ -87,7 +82,6 @@ public class OrdersService {
         return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
     }
 
-    // Update order status
     public ResponseEntity<OrdersEntity> updateOrderStatus(String orderId, OrderStatus status) {
         Optional<OrdersEntity> orderOpt = ordersDao.findById(orderId);
 
@@ -99,7 +93,6 @@ public class OrdersService {
         order.setStatus(status);
         ordersDao.save(order);
 
-        // If the status is "COMPLETED", delete the corresponding cart items
         if (status == OrderStatus.COMPLETED) {
             List<CartEntity> cartItems = cartDao.findByUser_Uid(order.getUser().getUid());
             cartDao.deleteAll(cartItems);

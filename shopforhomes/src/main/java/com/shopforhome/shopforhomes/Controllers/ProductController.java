@@ -71,4 +71,9 @@ public class ProductController {
     public List<ProductsEntity> searchProducts(@RequestParam String query) {
         return productServices.searchProducts(query);
     }
+
+    @GetMapping("search/category")
+    public List<ProductsEntity> searchByCategory(@RequestParam String category) {
+        return productServices.searchByCategory(category);
+    }
 }

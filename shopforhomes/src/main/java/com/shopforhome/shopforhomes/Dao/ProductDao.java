@@ -15,4 +15,8 @@ public interface ProductDao extends JpaRepository<ProductsEntity, String>
     // Autocomplete suggestions based on product name
     // @Query("SELECT p.name FROM ProductsEntity p WHERE LOWER(p.name) LIKE LOWER(CONCAT(:query, '%'))")
     // List<String> autocomplete(String query);
+    
+    // Search products by category
+    @Query("SELECT p FROM ProductsEntity p WHERE p.category = :category")
+    List<ProductsEntity> searchByCategory(String category);
 }

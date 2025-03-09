@@ -70,7 +70,10 @@ public class ProductServices {
     public List<ProductsEntity> searchProducts(String query) {
         return productDao.searchProducts(query);
     }
-
+    public List<ProductsEntity> searchByCategory(String category) {
+        return productDao.searchByCategory(category);
+    }
+    
     public List<ProductsEntity> getAllProductsWithoutId() {
         return productDao.findAll();
     }
