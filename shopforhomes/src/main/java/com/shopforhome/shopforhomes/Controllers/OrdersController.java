@@ -21,8 +21,8 @@ public class OrdersController {
     private OrdersService ordersService;
 
     @PostMapping("/place/{userId}")
-    public ResponseEntity<OrdersEntity> placeOrder(@PathVariable String userId) {
-        return ordersService.placeOrder(userId);
+    public ResponseEntity<OrdersEntity> placeOrder(@PathVariable String userId, @RequestParam(value = "couponCode", required = false) String couponCode) {
+        return ordersService.placeOrder(userId, couponCode);
     }
 
     // Get all pending orders for a user

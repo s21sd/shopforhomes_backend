@@ -24,7 +24,7 @@ public class WishlistService {
 
     public ResponseEntity<String> addToWishlist(WishlistEntity wishlist) {
         Optional<ProductsEntity> product = productDao.findById(wishlist.getPid());
-        if (!product.isPresent()) {
+        if (product.isPresent()) {
             wishlist.setProductName(product.get().getName());
             wishlist.setProductDescription(product.get().getDescription());
             wishlist.setCategory(product.get().getCategory());
@@ -46,7 +46,7 @@ public class WishlistService {
 
             return wishlist;
         }).collect(Collectors.toList());
-        System.out.println(wishlists);
+        // System.out.println(wishlists);
 
         return new ResponseEntity<>(wishlists, HttpStatus.OK);
     }

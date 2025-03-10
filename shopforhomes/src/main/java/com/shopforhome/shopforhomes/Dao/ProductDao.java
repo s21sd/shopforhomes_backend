@@ -6,6 +6,7 @@ import com.shopforhome.shopforhomes.Entities.ProductsEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
 import org.springframework.data.jpa.repository.Query;
 import java.util.List;
+import java.util.Optional;
 public interface ProductDao extends JpaRepository<ProductsEntity, String> 
 {
     // Full-text search on product name and description

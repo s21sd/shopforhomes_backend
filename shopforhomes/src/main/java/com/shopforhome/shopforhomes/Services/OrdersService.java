@@ -12,7 +12,6 @@ import com.shopforhome.shopforhomes.Dao.CartDao;
 import com.shopforhome.shopforhomes.Entities.CartEntity;
 import com.shopforhome.shopforhomes.Entities.OrdersEntity;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
-// import com.shopforhome.shopforhomes.Entities.UserEntity;
 import com.shopforhome.shopforhomes.Entities.OrderStatus;
 import com.shopforhome.shopforhomes.Entities.DiscountCouponsEntity;
 import com.shopforhome.shopforhomes.Dao.DiscountCouponsDao;
@@ -21,6 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.Map;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Service
 public class OrdersService {
@@ -47,26 +48,77 @@ public class OrdersService {
                 .sum();
     }
 
-    public ResponseEntity<OrdersEntity> placeOrder(String userId) {
-        if (userId == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    // public ResponseEntity<OrdersEntity> placeOrder(String userId) {
+    //     if (userId == null) {
+    //         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    //     }
 
-        Optional<UserEntity> userOpt = userDao.findById(userId);
-        if (userOpt.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    //     Optional<UserEntity> userOpt = userDao.findById(userId);
+    //     if (userOpt.isEmpty()) {
+    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    //     }
 
-        double totalPrice = calculateTotalPriceFromCart(userId);
+    //     double totalPrice = calculateTotalPriceFromCart(userId);
+    //     DisCo
+    //     OrdersEntity order = new OrdersEntity();
+    //     order.setUser(userOpt.get());
+    //     order.setTotalPrice(totalPrice);
+    //     order.setStatus(OrderStatus.PENDING);
 
-        OrdersEntity order = new OrdersEntity();
-        order.setUser(userOpt.get());
-        order.setTotalPrice(totalPrice);
-        order.setStatus(OrderStatus.PENDING);
-
-        OrdersEntity savedOrder = ordersDao.save(order);
-        return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    //     OrdersEntity savedOrder = ordersDao.save(order);
+    //     return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+    // }
+    public ResponseEntity<OrdersEntity> placeOrder(String userId, String couponCode) {
+    if (userId == null) {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    Optional<UserEntity> userOpt = userDao.findById(userId);
+    if (userOpt.isEmpty()) {
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    double totalPrice = calculateTotalPriceFromCart(userId);
+
+    // Check if a coupon is applied
+    if (couponCode != null && !couponCode.isEmpty()) {
+        Optional<DiscountCouponsEntity> couponOpt = discountCouponsDao.findByCode(couponCode);
+
+        if (couponOpt.isPresent()) {
+            DiscountCouponsEntity coupon = couponOpt.get();
+
+            // Validate coupon expiry and usage
+            if (coupon.getExpiryDate().before(Date.valueOf(LocalDate.now()))) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Coupon expired
+            }
+
+            if (coupon.getIsApplied() == 1) {
+                return new ResponseEntity<>(HttpStatus.CONFLICT); // Coupon already used
+            }
+
+            // Apply the discount to the total price
+            totalPrice -= coupon.getDiscount();
+
+            // Ensure the total price never goes below zero
+            totalPrice = Math.max(0, totalPrice);
+
+            // Mark the coupon as used
+            coupon.setIsApplied(1);
+            discountCouponsDao.save(coupon);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // Invalid coupon code
+        }
+    }
+
+    OrdersEntity order = new OrdersEntity();
+    order.setUser(userOpt.get());
+    order.setTotalPrice(totalPrice);
+    order.setStatus(OrderStatus.PENDING);
+
+    OrdersEntity savedOrder = ordersDao.save(order);
+    return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
+}
+
 
     public ResponseEntity<List<OrderDTO>> getPendingOrdersByUser(String userId) {
         List<OrdersEntity> pendingOrders = ordersDao.findByUser_UidAndStatus(userId, OrderStatus.PENDING);
@@ -97,7 +149,6 @@ public class OrdersService {
             List<CartEntity> cartItems = cartDao.findByUser_Uid(order.getUser().getUid());
             cartDao.deleteAll(cartItems);
         }
-
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 }
