@@ -21,7 +21,6 @@ public class ProductController {
     @Autowired
     private DiscountCouponsService discountCouponsService;
 
-    // Get all products from the
 
     @GetMapping("get")
     public ResponseEntity<List<ProductsEntity>> getAllProducts(@RequestParam String uid) {

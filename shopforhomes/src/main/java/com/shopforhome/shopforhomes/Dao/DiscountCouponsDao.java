@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.List;
 
 public interface DiscountCouponsDao extends JpaRepository<DiscountCouponsEntity, String> {
-    Optional<DiscountCouponsEntity> findByCodeAndUser(String code, UserEntity user); 
+    // Optional<DiscountCouponsEntity> findByCodeAndUser(String code, UserEntity user); 
     List<DiscountCouponsEntity> findByUser(UserEntity user);  
     Optional<DiscountCouponsEntity> findByCode(String code);
     Optional<DiscountCouponsEntity> findByDiscountId(String discountId);

@@ -56,35 +56,32 @@ public class DiscountCouponsService {
                      .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     
-    // Add a new discount coupon
     public ResponseEntity<String> addCoupon(DiscountCouponsEntity coupon) {
-        
-        if (coupon.getUser() == null || coupon.getUser().getUid() == null) {
-            return new ResponseEntity<>("400",HttpStatus.BAD_REQUEST); // 400 Bad Request if user is missing
-        }
-    
-        Optional<UserEntity> user = userDao.findById(coupon.getUser().getUid());
-        if (user.isEmpty()) {
-            return new ResponseEntity<>("User doesn't exists",HttpStatus.NOT_FOUND); // 404 if user not found
-        }
-
-        if (!user.get().getRole().equals("Admin")) 
-        {
-            return new ResponseEntity<>("Oops! You are not an admin",HttpStatus.FORBIDDEN); // 403 Forbidden if not Admin
-        }
-    
-        coupon.setUser(user.get());
-    
-        // Check if this user already has this coupon
-        Optional<DiscountCouponsEntity> existingCoupon = discountCouponsDao.findByCodeAndUser(coupon.getCode(), user.get());
-        if (existingCoupon.isPresent()) {
-            return new ResponseEntity<>("You have already applied this coupon",HttpStatus.CONFLICT); // 409 Conflict if user already has this coupon
-        }
-    
-        // Save the new coupon for this user
-        DiscountCouponsEntity savedCoupon = discountCouponsDao.save(coupon);
-        return new ResponseEntity<>("Discount coupon added", HttpStatus.CREATED);
+    if (coupon.getUser() == null || coupon.getUser().getUid() == null) {
+        return new ResponseEntity<>("400",HttpStatus.BAD_REQUEST);
     }
+
+    Optional<UserEntity> user = userDao.findById(coupon.getUser().getUid());
+    if (user.isEmpty()) {
+        return new ResponseEntity<>("User doesn't exists",HttpStatus.NOT_FOUND);
+    }
+
+    if (!user.get().getRole().equals("Admin")) {
+        return new ResponseEntity<>("Oops! You are not an admin",HttpStatus.FORBIDDEN);
+    }
+
+    // Set the admin user as creator but don't restrict coupon to this user
+    coupon.setUser(user.get());
+
+    // Check if coupon with this code already exists (regardless of user)
+    Optional<DiscountCouponsEntity> existingCoupon = discountCouponsDao.findByCode(coupon.getCode());
+    if (existingCoupon.isPresent()) {
+        return new ResponseEntity<>("Coupon with this code already exists",HttpStatus.CONFLICT);
+    }
+
+    DiscountCouponsEntity savedCoupon = discountCouponsDao.save(coupon);
+    return new ResponseEntity<>("Discount coupon added", HttpStatus.CREATED);
+}
     
     public ResponseEntity<String>removeDiscountcoupons(String discountId){
         Optional<DiscountCouponsEntity> discountCouponsEntity = discountCouponsDao.findById(discountId);
@@ -119,7 +116,6 @@ public class DiscountCouponsService {
             return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
         }
 
-        // Mark coupon as applied
         coupon.setIsApplied(1);
         discountCouponsDao.save(coupon);
 

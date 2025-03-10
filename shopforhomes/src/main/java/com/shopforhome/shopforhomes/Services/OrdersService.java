@@ -48,27 +48,7 @@ public class OrdersService {
                 .sum();
     }
 
-    // public ResponseEntity<OrdersEntity> placeOrder(String userId) {
-    //     if (userId == null) {
-    //         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    //     }
-
-    //     Optional<UserEntity> userOpt = userDao.findById(userId);
-    //     if (userOpt.isEmpty()) {
-    //         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    //     }
-
-    //     double totalPrice = calculateTotalPriceFromCart(userId);
-    //     DisCo
-    //     OrdersEntity order = new OrdersEntity();
-    //     order.setUser(userOpt.get());
-    //     order.setTotalPrice(totalPrice);
-    //     order.setStatus(OrderStatus.PENDING);
-
-    //     OrdersEntity savedOrder = ordersDao.save(order);
-    //     return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
-    // }
-    public ResponseEntity<OrdersEntity> placeOrder(String userId, String couponCode) {
+public ResponseEntity<OrdersEntity> placeOrder(String userId, String couponCode) {
     if (userId == null) {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
@@ -118,7 +98,6 @@ public class OrdersService {
     OrdersEntity savedOrder = ordersDao.save(order);
     return new ResponseEntity<>(savedOrder, HttpStatus.CREATED);
 }
-
 
     public ResponseEntity<List<OrderDTO>> getPendingOrdersByUser(String userId) {
         List<OrdersEntity> pendingOrders = ordersDao.findByUser_UidAndStatus(userId, OrderStatus.PENDING);
