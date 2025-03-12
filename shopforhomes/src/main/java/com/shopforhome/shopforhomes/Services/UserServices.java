@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+// import org.springframework.web.bind.annotation.PatchMapping;
+// import org.springframework.web.bind.annotation.PathVariable;
+// import org.springframework.web.bind.annotation.RequestBody;
 
 import com.shopforhome.shopforhomes.Dao.UserDao;
 import com.shopforhome.shopforhomes.Entities.UserEntity;
@@ -19,7 +19,6 @@ public class UserServices {
 
     public ResponseEntity<UserEntity> saveUser(UserEntity user) {
         return new ResponseEntity<UserEntity>(userDao.save(user), HttpStatus.CREATED);
-
     }
 
     public ResponseEntity<UserEntity> getUser(String uid) {
@@ -27,7 +26,7 @@ public class UserServices {
                 .map(user -> new ResponseEntity<>(user, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
+    
     // Update the user
     public ResponseEntity<String> updateUser(String uid, UserEntity user) {
         return userDao.findById(uid)

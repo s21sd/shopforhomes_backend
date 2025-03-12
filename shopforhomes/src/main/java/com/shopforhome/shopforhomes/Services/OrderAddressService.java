@@ -12,26 +12,26 @@ import java.util.*;
 public class OrderAddressService {
 
     @Autowired
-    private OrderAddressDao orderAddressRepository;
+    private OrderAddressDao orderAddressDao;
 
     public OrderAddressEntity addOrderAddress(OrderAddressEntity orderAddress) {
-        return orderAddressRepository.save(orderAddress);
+        return orderAddressDao.save(orderAddress);
     }
 
     public List<OrderAddressEntity> getAllAddresses() {
-        return orderAddressRepository.findAll();
+        return orderAddressDao.findAll();
     }
 
     public Optional<OrderAddressEntity> getOrderAddressById(String oaid) {
-        return orderAddressRepository.findById(oaid);
+        return orderAddressDao.findById(oaid);
     }
 
     public OrderAddressEntity updateAddress(String oaid, String newAddress) {
-        Optional<OrderAddressEntity> optionalAddress = orderAddressRepository.findById(oaid);
+        Optional<OrderAddressEntity> optionalAddress = orderAddressDao.findById(oaid);
         if (optionalAddress.isPresent()) {
             OrderAddressEntity addressEntity = optionalAddress.get();
             addressEntity.setAddress(newAddress);
-            return orderAddressRepository.save(addressEntity);
+            return orderAddressDao.save(addressEntity);
         }
         return null;
     }
