@@ -64,10 +64,10 @@ ShopForHome is an e-commerce application developed using **Spring Boot** and **S
 | POST   | /api/auth/login    | User login                  |
 
 ## Contributors
-- **Your Name** (Team 1)
-- **Team Member 1** (Akarsh Jaiswal)
-- **Team Member 2** (Saurav Mishra)
-- **Team Member 3** (Anjani)
-- - **Team Member 4** (Kushagra Sharma)
+- **Team Member 1** (Sunny Srivastava)
+- **Team Member 2** (Akarsh Jaiswal)
+- **Team Member 3** (Saurav Mishra)
+- **Team Member 4** (Anjani)
+- **Team Member 5** (Kushagra Sharma)
 
 
